@@ -90,80 +90,149 @@ summary = json.loads(metrics_path.read_text()) if metrics_path.exists() else {}
 # =============================================================================
 # FIG 1 — Network Single-Line Diagram
 # =============================================================================
-print("  Fig 1 — Single-line diagram...")
-fig, ax = plt.subplots(figsize=(11, 7))
-ax.set_facecolor(C["bg"])
-fig.patch.set_facecolor("white")
-ax.axis("off")
-ax.set_xlim(0, 1); ax.set_ylim(0, 1)
+print("  Fig 1 — Single-line diagram (Professional IEEE standard layout)...")
+fig, ax = plt.subplots(figsize=(15, 10), dpi=220)
+fig.patch.set_facecolor('#ffffff')
+ax.set_facecolor('#ffffff')
+ax.set_xlim(0, 15)
+ax.set_ylim(0, 10.5)
+ax.axis('off')
 
-nodes = {
-    "STEG\n20 kV":        (0.50, 0.93),
-    "Transformer\n250 kVA": (0.50, 0.76),
-    "LV Busbar\n0.4 kV":  (0.50, 0.60),
-    "Admin\nBuilding":    (0.20, 0.38),
-    "Labs &\nHVAC":       (0.50, 0.38),
-    "Residence\n& EV":    (0.80, 0.38),
-    "PV Array\n50 kWp":   (0.10, 0.60),
-    "BESS\n100 kWh":      (0.90, 0.60),
-}
-node_types = {
-    "STEG\n20 kV":        ("grid",    "#64748b"),
-    "Transformer\n250 kVA": ("transfo", "#7c3aed"),
-    "LV Busbar\n0.4 kV":  ("bus",     "#1d4ed8"),
-    "Admin\nBuilding":    ("load",    "#0891b2"),
-    "Labs &\nHVAC":       ("load",    "#0284c7"),
-    "Residence\n& EV":    ("load",    "#0369a1"),
-    "PV Array\n50 kWp":   ("gen",     "#d97706"),
-    "BESS\n100 kWh":      ("storage", "#16a34a"),
-}
-edges = [
-    ("STEG\n20 kV",        "Transformer\n250 kVA", "20 kV"),
-    ("Transformer\n250 kVA", "LV Busbar\n0.4 kV",  "0.4 kV"),
-    ("LV Busbar\n0.4 kV",  "Admin\nBuilding",    "L1"),
-    ("LV Busbar\n0.4 kV",  "Labs &\nHVAC",       "L2"),
-    ("LV Busbar\n0.4 kV",  "Residence\n& EV",    "L3"),
-    ("PV Array\n50 kWp",   "LV Busbar\n0.4 kV",  "L4"),
-    ("BESS\n100 kWh",      "LV Busbar\n0.4 kV",  "L5"),
+# Title
+ax.text(7.5, 10.15, 'Figure 1 — Campus Microgrid Electrical Single-Line Diagram (SLD)',
+        ha='center', va='center', fontsize=15, fontweight='bold', color='#0f172a')
+ax.text(7.5, 9.75, '7-Bus, 20/0.4 kV Radial Feeder Topology with Rooftop Solar PV & Battery Energy Storage (BESS)',
+        ha='center', va='center', fontsize=11, color='#475569')
+
+# 1. Medium Voltage Grid (Top)
+grid_rect = patches.FancyBboxPatch((6.0, 8.5), 3.0, 0.85, boxstyle='round,pad=0.08',
+                                  facecolor='#f8fafc', edgecolor='#334155', linewidth=1.6)
+ax.add_patch(grid_rect)
+ax.text(7.5, 8.92, 'STEG Utility Grid\n20 kV Medium Voltage (Bus 0 - Slack)',
+        ha='center', va='center', fontsize=9.5, fontweight='bold', color='#0f172a')
+
+# Line from Grid to Breaker
+ax.plot([7.5, 7.5], [8.5, 8.0], color='#1e293b', lw=2.2)
+
+# HV Circuit breaker
+cb1 = patches.Rectangle((7.35, 8.0), 0.3, 0.3, facecolor='#ffffff', edgecolor='#0f172a', lw=1.5)
+ax.add_patch(cb1)
+ax.plot([7.35, 7.65], [8.0, 8.3], color='#0f172a', lw=1.5)
+ax.text(7.85, 8.15, 'HV Circuit Breaker', fontsize=8.0, color='#475569', va='center')
+
+# Line to transformer
+ax.plot([7.5, 7.5], [8.0, 7.55], color='#1e293b', lw=2.2)
+
+# Transformer (2 overlapping circles)
+circ1 = patches.Circle((7.5, 7.25), 0.35, facecolor='#f5f3ff', edgecolor='#7c3aed', lw=2.2)
+circ2 = patches.Circle((7.5, 6.80), 0.35, facecolor='#f5f3ff', edgecolor='#7c3aed', lw=2.2)
+ax.add_patch(circ1)
+ax.add_patch(circ2)
+ax.text(8.2, 7.02, 'Dyn11 Step-Down Transformer\n250 kVA, 20 kV / 0.4 kV\nu_k = 4.0%, P_fe = 0.55 kW',
+        fontsize=9.0, color='#5b21b6', va='center', fontweight='600')
+
+# Line to Main LV breaker
+ax.plot([7.5, 7.5], [6.45, 6.0], color='#1e293b', lw=2.5)
+cb2 = patches.Rectangle((7.35, 6.0), 0.3, 0.3, facecolor='#ffffff', edgecolor='#0f172a', lw=1.5)
+ax.add_patch(cb2)
+ax.plot([7.35, 7.65], [6.0, 6.3], color='#0f172a', lw=1.5)
+ax.text(7.85, 6.15, 'Main LV Air Circuit Breaker', fontsize=8.0, color='#475569', va='center')
+
+# Line from Breaker to Busbar
+ax.plot([7.5, 7.5], [6.0, 5.3], color='#1e293b', lw=2.5)
+
+# 2. Main 0.4 kV Busbar (Thick horizontal bar)
+bus_y = 5.3
+ax.plot([1.0, 14.0], [bus_y, bus_y], color='#1e3a8a', lw=7.0, solid_capstyle='round')
+
+# Busbar label (placed on left above busbar)
+ax.text(1.2, bus_y + 0.3, 'Main Low-Voltage Busbar (Bus 1) — 400 V Line-to-Line, 3-Phase, 50 Hz',
+        ha='left', va='bottom', fontsize=11, fontweight='bold', color='#1e3a8a')
+
+# PCC Sensor badge
+sensor_pcc = patches.FancyBboxPatch((10.0, bus_y + 0.25), 3.6, 0.65, boxstyle='round,pad=0.06',
+                                    facecolor='#fef2f2', edgecolor='#dc2626', linewidth=1.5)
+ax.add_patch(sensor_pcc)
+ax.plot([11.8, 11.8], [bus_y, bus_y + 0.25], color='#dc2626', lw=1.8)
+ax.plot(11.8, bus_y, 'v', color='#dc2626', ms=8)
+ax.text(11.8, bus_y + 0.58, 'PCC Voltage Sensor (V1) & Meter P_grid\nTelemetry: 15-min / 5-min SCADA',
+        ha='center', va='center', fontsize=8.0, fontweight='bold', color='#b91c1c')
+
+# 3. Five Radial Feeder Bays
+bays = [
+    {
+        'x': 2.2, 'name': 'Feeder 4: Rooftop PV',
+        'cable': 'L04: 35 mm2 Al, 30 m\nR = 0.868, X = 0.078 Ohm/km',
+        'comp': '50 kWp Rooftop Solar Array',
+        'sub': 'Inverter: 50 kVA Grid-Tied\nSensors: V_inv (V2) & P_pv\nWeather: GHI, T_amb, Wind',
+        'color': '#d97706', 'bg': '#fffbeb', 'type': 'PV Generation',
+        'kw': '50 kWp Peak',
+    },
+    {
+        'x': 4.8, 'name': 'Feeder 1: Admin Building',
+        'cable': 'L01: 70 mm2 Al, 40 m\nR = 0.443, X = 0.076 Ohm/km',
+        'comp': 'Administration Offices',
+        'sub': 'Peak Load: 15.0 kW (30% split)\nWorkday Hours: 08:00 - 18:00\nSmart Meter: P_load1',
+        'color': '#0284c7', 'bg': '#f0f9ff', 'type': 'Commercial Load',
+        'kw': '15 kW Peak',
+    },
+    {
+        'x': 7.5, 'name': 'Feeder 2: Labs & HVAC',
+        'cable': 'L02: 95 mm2 Al, 60 m\nR = 0.320, X = 0.074 Ohm/km',
+        'comp': 'Research Labs & HVAC',
+        'sub': 'Peak Load: 25.0 kW (50% split)\nHigh Dynamic Air-Conditioning\nSmart Meter: P_load2',
+        'color': '#0369a1', 'bg': '#f0f9ff', 'type': 'Heavy Dynamic Load',
+        'kw': '25 kW Peak',
+    },
+    {
+        'x': 10.2, 'name': 'Feeder 3: Residence & EV',
+        'cable': 'L03: 70 mm2 Al, 80 m\nR = 0.443, X = 0.076 Ohm/km',
+        'comp': 'Student Residence & EV',
+        'sub': 'Peak Load: 10.0 kW (20% split)\nEvening Peak & EV Charging\nSmart Meter: P_load3',
+        'color': '#0891b2', 'bg': '#f0f9ff', 'type': 'Residential + EV',
+        'kw': '10 kW Peak',
+    },
+    {
+        'x': 12.8, 'name': 'Feeder 5: Storage BESS',
+        'cable': 'L05: 35 mm2 Al, 20 m\nR = 0.868, X = 0.078 Ohm/km',
+        'comp': 'Battery Energy Storage',
+        'sub': 'Lithium-Ion: 100 kWh / 25 kW\nBi-directional Inverter (DC/AC)\nSensors: P_bess, SoC%',
+        'color': '#16a34a', 'bg': '#f0fdf4', 'type': 'Energy Storage',
+        'kw': '100 kWh / 25 kW',
+    },
 ]
-for a, b, lbl in edges:
-    x1, y1 = nodes[a]; x2, y2 = nodes[b]
-    ax.plot([x1, x2], [y1, y2], "-", color="#334155", linewidth=2.5, zorder=1)
-    mx, my = (x1+x2)/2, (y1+y2)/2
-    ax.text(mx+0.01, my, lbl, fontsize=8, color="#475569",
-            ha="left", va="center",
-            bbox=dict(boxstyle="round,pad=0.15", facecolor="white", edgecolor="none", alpha=0.8))
 
-sensor_pos = [(0.50, 0.60, "V₁\nPCC"), (0.10, 0.60, "V₂\nInv.")]
-for sx, sy, slbl in sensor_pos:
-    ax.plot(sx+0.045, sy+0.04, "^", color=C["red"], ms=7, zorder=5)
-    ax.text(sx+0.06, sy+0.04, slbl, fontsize=7.5, color=C["red"], va="center")
+for bay in bays:
+    bx = bay['x']
+    ax.plot([bx, bx], [bus_y, 4.6], color='#334155', lw=2.0)
+    cb = patches.Rectangle((bx - 0.15, 4.3), 0.3, 0.3, facecolor='#ffffff', edgecolor='#334155', lw=1.2)
+    ax.add_patch(cb)
+    ax.plot([bx - 0.15, bx + 0.15], [4.3, 4.6], color='#334155', lw=1.2)
+    ax.plot([bx, bx], [4.3, 3.85], color='#334155', lw=2.0)
+    cable_box = patches.FancyBboxPatch((bx - 1.1, 3.35), 2.2, 0.5, boxstyle='round,pad=0.04',
+                                       facecolor='#f8fafc', edgecolor='#cbd5e1', lw=1.0)
+    ax.add_patch(cable_box)
+    ax.text(bx, 3.60, bay['cable'], ha='center', va='center', fontsize=7.2, color='#475569')
+    ax.plot([bx, bx], [3.35, 2.9], color='#334155', lw=2.0)
+    card = patches.FancyBboxPatch((bx - 1.2, 0.7), 2.4, 2.2, boxstyle='round,pad=0.08',
+                                  facecolor=bay['bg'], edgecolor=bay['color'], lw=1.8)
+    ax.add_patch(card)
+    hdr = patches.Rectangle((bx - 1.2, 2.4), 2.4, 0.5, facecolor=bay['color'], edgecolor=bay['color'])
+    ax.add_patch(hdr)
+    ax.text(bx, 2.65, bay['name'], ha='center', va='center', fontsize=8.2, fontweight='bold', color='#ffffff')
+    ax.text(bx, 2.05, bay['comp'], ha='center', va='center', fontsize=8.8, fontweight='bold', color='#1e293b')
+    ax.text(bx, 1.75, '[' + bay['kw'] + ']', ha='center', va='center', fontsize=8.0, fontweight='600', color=bay['color'])
+    ax.text(bx, 1.20, bay['sub'], ha='center', va='center', fontsize=7.5, color='#334155')
 
-for name, (x, y) in nodes.items():
-    _, color = node_types[name]
-    ax.scatter(x, y, s=1800, c=color, zorder=4,
-               edgecolors="white", linewidths=2.5)
-    ax.text(x, y - 0.085, name, ha="center", va="top", fontsize=8,
-            fontweight="600", color="#1e293b")
+summary_rect = patches.FancyBboxPatch((1.0, 0.12), 13.0, 0.45, boxstyle='round,pad=0.04',
+                                     facecolor='#f8fafc', edgecolor='#94a3b8', lw=1.0)
+ax.add_patch(summary_rect)
+ax.text(7.5, 0.35, 'IEEE 1547 Interconnection Compliance · Real Campus Rooftop PV (238,464 Rows) · 3 Feeders Calibrated to STEG Bills · Newton-Raphson AC Load Flow',
+        ha='center', va='center', fontsize=8.4, fontweight='600', color='#334155')
 
-legend_patches = [
-    mpatches.Patch(color="#64748b", label="Grid Connection"),
-    mpatches.Patch(color="#7c3aed", label="Transformer"),
-    mpatches.Patch(color="#1d4ed8", label="LV Bus"),
-    mpatches.Patch(color="#0891b2", label="Load Feeder"),
-    mpatches.Patch(color="#d97706", label="PV Generation"),
-    mpatches.Patch(color="#16a34a", label="Battery Storage"),
-    mpatches.Patch(color=C["red"],  label="Voltage Sensor"),
-]
-ax.legend(handles=legend_patches, loc="lower right", fontsize=8,
-          title="Legend", title_fontsize=9, framealpha=0.95)
-ax.set_title("Fig. 1 — Campus Microgrid Single-Line Diagram\n"
-             "7-bus, 20/0.4 kV, pandapower Newton-Raphson power flow",
-             pad=12)
-plt.tight_layout()
-plt.savefig(OUT / "fig01_single_line_diagram.png")
+plt.savefig(OUT / "fig01_single_line_diagram.png", bbox_inches='tight', dpi=220)
 plt.close()
-print("    -> fig01 saved")
+print("    -> fig01 saved (professional SLD)")
 
 
 # =============================================================================

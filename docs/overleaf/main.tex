@@ -107,31 +107,30 @@
 {\small\color{TextDark!60} Tunisia Section · IEEE TSYP14 Congress 2026}
 \end{tcolorbox}
 
-\vspace{1.5cm}
+\vspace{1.0cm}
 
-\begin{tabular}{ll}
+\begin{tabularx}{0.95\linewidth}{p{4.2cm}X}
 \toprule
 \textbf{Challenge Track} & IEEE PES (Power \& Energy) + IES (Industrial Electronics)\\
 \textbf{Submission Phase} & Phase 1 — Ideation \& Data Exploration\\
-\textbf{System Under Study} & University Campus Microgrid (20 kV/0.4 kV, 7-bus)\\
+\textbf{System Under Study} & University Campus Microgrid (20\,kV / 0.4\,kV, 7-bus)\\
 \textbf{Repository} & \url{https://github.com/anonymous-tsyp14/energymind}\\
 \textbf{Version} & EnergyMind V2 · 5 Seeds · 21/21 Tests Passing\\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 
-\vspace{2cm}
+\vspace{1.2cm}
 
-\begin{tcolorbox}[resultbox, width=0.85\linewidth]
-\centering\bfseries Key Phase 1 Results\\[0.3cm]
+\begin{tcolorbox}[resultbox, width=\linewidth]
+\centering{\large\bfseries Key Phase 1 Experimental Results}\\[0.3cm]
 \normalfont\small
-\begin{tabular}{lr|lr}
-Event Recall & \textbf{58.1\%} (CI95: 54.5–61.7\%) &
-Precision & \textbf{91.2\%}\\
-Calibrated ECE & \textbf{0.038} (target $\le$0.05 ✓) &
-Surrogate MAE & \textbf{0.096 kW} ($<$0.1 kW ✓)\\
-Diagnostic Acc. (decided) & \textbf{100\%} (5 seeds) &
-False Alarms / Day & \textbf{0.173}\\
-\end{tabular}
+\begin{tabularx}{0.95\linewidth}{p{3.0cm}X|p{3.2cm}X}
+\toprule
+\textbf{Event Recall} & \textbf{58.1\%} (54.5--61.7\%) & \textbf{Precision} & \textbf{91.2\%} (90.8--91.7\%)\\
+\textbf{ECE (calibrated)} & \textbf{0.038} (target $\le$0.05) & \textbf{Surrogate MAE} & \textbf{0.096\,kW} ($<$0.1\,kW)\\
+\textbf{Diagnostic Acc.} & \textbf{100\%} (decided cases) & \textbf{False Alarms} & \textbf{0.173/day} ($<$0.5/day)\\
+\bottomrule
+\end{tabularx}
 \end{tcolorbox}
 
 \vfill
@@ -201,7 +200,7 @@ A critical design principle is the strict separation between \emph{physical grou
 \begin{table}[H]
 \centering
 \caption{Eight-Class Cyber-Physical Anomaly Taxonomy}
-\begin{tabular}{clll}
+\begin{tabularx}{\linewidth}{cllX}
 \toprule
 \textbf{Code} & \textbf{Class} & \textbf{Layer} & \textbf{Detection Challenge}\\
 \midrule
@@ -214,7 +213,7 @@ V1 & \texttt{voltage\_sensor\_fault} & Sensor & PCC voltage transducer offset\\
 B1 & \texttt{bess\_sensor\_fault} & Sensor & Battery SoC coulomb counter drift\\
 A1 & \texttt{coordinated\_falsif.} & Cyber & Multi-sensor stealth falsification\\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \begin{tcolorbox}[warnbox]
@@ -237,7 +236,7 @@ EnergyMind addresses all four TSYP14 Challenge Goals:
 1 & Evidence Fusion \& Fault Detection & Physics residuals + IsoForest + CUSUM hybrid fusion\\
 2 & Trust \& Uncertainty Quantification & Isotonic calibration (ECE=0.038), selective abstention, Active Evidence Acquisition\\
 3 & Governance \& Explainability & SHA-256 audit chain, SHAP per-alert attribution, expected-loss policy\\
-4 & Collective Defense & Noosphere: peer-to-peer ε-DP knowledge transfer across multiple energy nodes\\
+4 & Collective Defense & Noosphere: peer-to-peer $\varepsilon$-DP knowledge transfer across multiple energy nodes\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -246,7 +245,7 @@ EnergyMind addresses all four TSYP14 Challenge Goals:
 \begin{itemize}
   \item All announced functions exist and pass automated unit tests (21/21)
   \item All metrics computed from held-out test sets with deterministic seeds
-  \item Every model choice is justified empirically against alternatives (see \texttt{docs/MODEL\_SELECTION.md})
+  \item Every model choice is justified empirically against alternatives (see \texttt{docs/\allowbreak{}MODEL\_SELECTION.md})
   \item Limitations are documented honestly — no metric inflation
 \end{itemize}
 
@@ -321,8 +320,8 @@ Figure~\ref{fig:architecture} presents the complete EnergyMind five-layer archit
 
 \begin{figure}[H]
   \centering
-  \resizebox{0.98\linewidth}{!}{\input{architecture.tex}}
-  \caption{EnergyMind global system architecture. Five distinct layers: (1) Physical 7-bus microgrid with PV, BESS, and campus feeders; (2) Sensor and telemetry acquisition; (3) AI Trust Layer with hybrid detection, Bayesian diagnosis, and isotonic calibration; (4) Governance with SHA-256 audit chain and SHAP explainability; (5) Noosphere federated multi-node collective defense network. Color coding: amber = power flow, blue = sensor telemetry, green = AI processing, red = governance, violet = federated network.}
+  \includegraphics[width=\linewidth]{figures/fig03_architecture.png}
+  \caption{EnergyMind global system architecture. Five distinct layers: (1)~Physical 7-bus campus microgrid with PV, BESS, and campus feeders; (2)~Sensor and SCADA telemetry acquisition; (3)~AI Trust Layer with hybrid detection, Bayesian diagnosis, and isotonic calibration (ECE = 0.038); (4)~Governance layer with SHA-256 audit chain, SHAP explainability, and human operator escalation; (5)~Noosphere federated multi-node collective defense across campus, factory, hospital, smart building, and rural microgrid nodes. Arrows: amber = power flow, blue = telemetry, green = AI, red = governance, violet = federated knowledge.}
   \label{fig:architecture}
 \end{figure}
 
@@ -471,7 +470,7 @@ All experiments use 5 deterministic seeds $S \in \{22, 33, 44, 55, 66\}$. Each s
 \toprule
 \textbf{Method} & \textbf{Event Recall} & \textbf{Precision} & \textbf{FPR} & \textbf{FA / Day}\\
 \midrule
-A: IsoForest (Raw) & 0.035 [−0.003, 0.074] & 0.463 & 0.0006 & $\approx$2.8\\
+A: IsoForest (Raw) & 0.035 [-0.003, 0.074] & 0.463 & 0.0006 & $\approx$2.8\\
 B: Physics Only & 0.490 [0.477, 0.503] & 0.922 & 0.0026 & 0.62\\
 C: IsoForest + Residuals & 0.450 [0.415, 0.485] & 0.908 & 0.0022 & 0.53\\
 D: CUSUM (Standalone) & 0.840 [0.810, 0.869] & 0.121 & 0.5777 & 184.2\\
@@ -493,19 +492,19 @@ D: CUSUM (Standalone) & 0.840 [0.810, 0.869] & 0.121 & 0.5777 & 184.2\\
 \begin{table}[H]
 \centering
 \caption{Goal 2 — Uncertainty Quantification Metrics}
-\begin{tabular}{lll}
+\begin{tabularx}{\linewidth}{llX}
 \toprule
 \textbf{Metric} & \textbf{Value} & \textbf{Target / Interpretation}\\
 \midrule
-ECE (calibrated) & 0.038 (CI95: 0.020–0.057) & $\le$0.05 ✓\\
+ECE (calibrated) & 0.038 (CI95: 0.020--0.057) & $\le$0.05 \checkmark\\
 ECE (raw, uncalibrated) & $\approx$0.12 & Baseline before calibration\\
-Brier score & 0.036 (CI95: 0.033–0.039) & Lower is better\\
+Brier score & 0.036 (CI95: 0.033--0.039) & Lower is better\\
 Abstention rate & 50.6\% & Refuses when uncertain\\
 Accuracy (decided cases) & 100.0\% (5/5 seeds) & No wrong diagnoses when system commits\\
 Accuracy (forced, no abstention) & 86.1\% & Accuracy without selective prediction\\
 Human review rate & 72.1\% & Proportion escalated to operator\\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \subsection{Goal 4 — Noosphere Knowledge Transfer}
@@ -513,19 +512,19 @@ Human review rate & 72.1\% & Proportion escalated to operator\\
 \begin{table}[H]
 \centering
 \caption{Noosphere Transfer Results — Campus Node $\to$ Factory Node (Phase 1)}
-\begin{tabular}{lll}
+\begin{tabularx}{\linewidth}{llX}
 \toprule
 \textbf{Fault Class} & \textbf{Status} & \textbf{Compatibility Check}\\
 \midrule
-\texttt{pv\_fault} & \textcolor{AccentGreen}{\checkmark Imported} & $w=0.3$, $\varepsilon=1.0$, sensors compatible\\
-\texttt{grid\_event} & \textcolor{AccentRed}{$\times$ Rejected} & Missing sensor: \texttt{vinv}\\
-\texttt{load\_peak} & \textcolor{AccentGreen}{\checkmark Imported} & $w=0.3$, $\varepsilon=1.0$, sensors compatible\\
-\texttt{pv\_sensor\_fault} & \textcolor{AccentRed}{$\times$ Rejected} & Missing sensor: \texttt{inv}\\
-\texttt{voltage\_sensor\_fault} & \textcolor{AccentGreen}{\checkmark Imported} & $w=0.3$, $\varepsilon=1.0$, sensors compatible\\
-\texttt{bess\_sensor\_fault} & \textcolor{AccentGreen}{\checkmark Imported} & $w=0.3$, $\varepsilon=1.0$, sensors compatible\\
-\texttt{coordinated\_falsification} & \textcolor{AccentRed}{$\times$ Rejected} & Missing sensor: \texttt{inv}\\
+\texttt{pv\_fault} & \textcolor{AccentGreen}{\checkmark~Imported} & $w=0.3$, $\varepsilon=1.0$, sensors compatible\\
+\texttt{grid\_event} & \textcolor{AccentRed}{$\times$~Rejected} & Missing sensor: \texttt{vinv}\\
+\texttt{load\_peak} & \textcolor{AccentGreen}{\checkmark~Imported} & $w=0.3$, $\varepsilon=1.0$, sensors compatible\\
+\texttt{pv\_sensor\_fault} & \textcolor{AccentRed}{$\times$~Rejected} & Missing sensor: \texttt{inv}\\
+\texttt{voltage\_sensor\_fault} & \textcolor{AccentGreen}{\checkmark~Imported} & $w=0.3$, $\varepsilon=1.0$, sensors compatible\\
+\texttt{bess\_sensor\_fault} & \textcolor{AccentGreen}{\checkmark~Imported} & $w=0.3$, $\varepsilon=1.0$, sensors compatible\\
+\texttt{coordinated\_falsification} & \textcolor{AccentRed}{$\times$~Rejected} & Missing sensor: \texttt{inv}\\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \begin{tcolorbox}[warnbox]
@@ -583,23 +582,23 @@ Low & Hardware-in-the-loop (OPAL-RT) testing & Real-time grid validation\\
 \begin{table}[H]
 \centering
 \caption{Phase 1 Required Deliverables — Checklist}
-\begin{tabular}{lll}
+\begin{tabularx}{\linewidth}{lXl}
 \toprule
 \textbf{Deliverable} & \textbf{File / Location} & \textbf{Status}\\
 \midrule
-Project Proposal (this report) & \texttt{docs/REPORT\_PHASE1.tex} & ✓ Complete\\
-Scope definition & Section 2 of this report & ✓ Complete\\
-Objectives & Section 3 of this report & ✓ Complete\\
-Data / anomaly simulation plan & Section 4 of this report & ✓ Complete\\
-Preliminary design for each Goal & Section 5 of this report & ✓ Complete\\
-GitHub Repository & \url{https://github.com/anonymous-tsyp14/energymind} & ✓ Public\\
-Dataset & \texttt{data/raw/} + \texttt{data/reference/} & ✓ Committed\\
-Code developed in Phase 1 & \texttt{src/energymind/} + \texttt{scripts/} & ✓ Committed\\
-Unit tests & \texttt{tests/test\_core.py} & ✓ 21/21 PASS\\
-Monitoring platform & \texttt{app/dashboard.py} (FastAPI) & ✓ Running\\
-Publication figures & \texttt{outputs/fig01--fig08.png} & ✓ Generated\\
+Project Proposal (this report) & \texttt{docs/REPORT\_PHASE1.tex} & \checkmark~Complete\\
+Scope definition & Section 2 of this report & \checkmark~Complete\\
+Objectives & Section 3 of this report & \checkmark~Complete\\
+Data / anomaly simulation plan & Section 4 of this report & \checkmark~Complete\\
+Preliminary design for each Goal & Section 5 of this report & \checkmark~Complete\\
+GitHub Repository & \url{https://github.com/anonymous-tsyp14/energymind} & \checkmark~Public\\
+Dataset & \texttt{data/raw/} + \texttt{data/reference/} & \checkmark~Done\\
+Code developed in Phase 1 & \texttt{src/energymind/} + \texttt{scripts/} & \checkmark~Done\\
+Unit tests & \texttt{tests/test\_core.py} & \checkmark~21/21 PASS\\
+Monitoring platform & \texttt{app/dashboard.py} (FastAPI) & \checkmark~Running\\
+Publication figures & \texttt{outputs/fig01--fig08.png} & \checkmark~Generated\\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \textbf{To reproduce all results:}
