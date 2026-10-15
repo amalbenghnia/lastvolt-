@@ -1,3 +1,4 @@
+% !TeX root = main.tex
 \documentclass[12pt, a4paper]{article}
 
 \usepackage[utf8]{inputenc}
@@ -25,7 +26,10 @@
 \usepackage{tcolorbox}
 \usepackage{mdframed}
 \usepackage{tikz}
-\usetikzlibrary{fit, positioning, arrows.meta, backgrounds, shadows.blur}
+\usetikzlibrary{fit, positioning, arrows.meta, backgrounds, shadows.blur, decorations.pathreplacing}
+
+\graphicspath{{./}{figures/}}
+\providecommand{\doi}[1]{\url{https://doi.org/#1}}
 
 \definecolor{AccentBlue}{HTML}{2563EB}
 \definecolor{AccentGreen}{HTML}{059669}
@@ -36,6 +40,20 @@
 \definecolor{PanelGray}{HTML}{F8FAFC}
 \definecolor{BorderGray}{HTML}{E2E8F0}
 \definecolor{TextDark}{HTML}{1E293B}
+\definecolor{TextMuted}{HTML}{64748B}
+
+\definecolor{GridOrange}{HTML}{F97316}
+\definecolor{GridAmber}{HTML}{FBBF24}
+\definecolor{SensorBlue}{HTML}{3B82F6}
+\definecolor{SensorLightBlue}{HTML}{BFDBFE}
+\definecolor{AIGreen}{HTML}{10B981}
+\definecolor{AILightGreen}{HTML}{A7F3D0}
+\definecolor{GovernRed}{HTML}{EF4444}
+\definecolor{GovernLightRed}{HTML}{FECACA}
+\definecolor{NoosphereViolet}{HTML}{8B5CF6}
+\definecolor{NoosphereLightViolet}{HTML}{DDD6FE}
+\definecolor{NodeBg}{HTML}{F8FAFC}
+\definecolor{LayerBg}{HTML}{F1F5F9}
 
 \hypersetup{
   colorlinks=true, linkcolor=AccentBlue,
@@ -601,22 +619,22 @@ uvicorn app.dashboard:app --port 8000  # Live SCADA platform
 \begin{thebibliography}{16}
 
 \bibitem{ieee1547}
-IEEE Std 1547-2018, \emph{Standard for Interconnection and Interoperability of Distributed Energy Resources with Associated Electric Power Systems Interfaces}, IEEE, 2018. \doi{10.1109/IEEESTD.2018.8332112}
+IEEE Std 1547-2018, \emph{Standard for Interconnection and Interoperability of Distributed Energy Resources with Associated Electric Power Systems Interfaces}, IEEE, 2018. \url{https://doi.org/10.1109/IEEESTD.2018.8332112}
 
 \bibitem{pandapower}
-L. Thurner, A. Scheidler, F. Schäfer \emph{et al.}, ``pandapower: An Open-Source Python Tool for Convenient Modeling, Analysis, and Optimization of Electric Power Systems,'' \emph{IEEE Trans. Power Systems}, vol. 33, no. 6, pp. 6510--6521, 2018. \doi{10.1109/TPWRS.2018.2829021}
+L. Thurner, A. Scheidler, F. Schäfer \emph{et al.}, ``pandapower: An Open-Source Python Tool for Convenient Modeling, Analysis, and Optimization of Electric Power Systems,'' \emph{IEEE Trans. Power Systems}, vol. 33, no. 6, pp. 6510--6521, 2018. \url{https://doi.org/10.1109/TPWRS.2018.2829021}
 
 \bibitem{isoforest}
-F. T. Liu, K. M. Ting, Z.-H. Zhou, ``Isolation Forest,'' \emph{Proc. 8th IEEE ICDM}, pp. 413--422, 2008. \doi{10.1109/ICDM.2008.17}
+F. T. Liu, K. M. Ting, Z.-H. Zhou, ``Isolation Forest,'' \emph{Proc. 8th IEEE ICDM}, pp. 413--422, 2008. \url{https://doi.org/10.1109/ICDM.2008.17}
 
 \bibitem{shap}
 S. M. Lundberg, S.-I. Lee, ``A Unified Approach to Interpreting Model Predictions,'' \emph{NeurIPS}, vol. 30, 2017. \url{https://arxiv.org/abs/1705.07874}
 
 \bibitem{zadrozny}
-B. Zadrozny, C. Elkan, ``Transforming Classifier Scores into Accurate Multiclass Probability Estimates,'' \emph{Proc. 8th ACM SIGKDD}, pp. 694--699, 2002. \doi{10.1145/775047.775151}
+B. Zadrozny, C. Elkan, ``Transforming Classifier Scores into Accurate Multiclass Probability Estimates,'' \emph{Proc. 8th ACM SIGKDD}, pp. 694--699, 2002. \url{https://doi.org/10.1145/775047.775151}
 
 \bibitem{dwork_dp}
-C. Dwork, ``Differential Privacy,'' \emph{Proc. ICALP}, LNCS 4052, pp. 1--12, 2006. \doi{10.1007/11787006_1}
+C. Dwork, ``Differential Privacy,'' \emph{Proc. ICALP}, LNCS 4052, pp. 1--12, 2006. \url{https://doi.org/10.1007/11787006_1}
 
 \bibitem{selective_pred}
 Y. Geifman, R. El-Yaniv, ``Selective Classification for Deep Neural Networks,'' \emph{NeurIPS}, 2017. \url{https://arxiv.org/abs/1705.08500}
@@ -628,7 +646,7 @@ T. Huld \emph{et al.}, ``A New Solar Radiation Database for Estimating PV Perfor
 P. W. Stackhouse \emph{et al.}, ``NASA POWER Project,'' NASA Langley Research Center, 2023. \url{https://power.larc.nasa.gov/}
 
 \bibitem{simbench}
-S. Meinecke \emph{et al.}, ``SimBench: A Benchmark Dataset of Electric Power Systems,'' \emph{Energies}, vol. 13, no. 12, 2020. \doi{10.3390/en13123412}
+S. Meinecke \emph{et al.}, ``SimBench: A Benchmark Dataset of Electric Power Systems,'' \emph{Energies}, vol. 13, no. 12, 2020. \url{https://doi.org/10.3390/en13123412}
 
 \bibitem{doe_bldg}
 N. Wang \emph{et al.}, ``Commercial Reference Building Models of the National Building Stock,'' NREL/TP-5500-46861, 2011. \url{https://www.energy.gov/eere/buildings/commercial-reference-buildings}
