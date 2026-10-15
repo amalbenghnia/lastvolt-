@@ -1,0 +1,12 @@
+{
+  "rows": 238464,
+  "start": "2022-02-24 00:00:00",
+  "end": "2024-05-31 23:55:00",
+  "missing_timestamps": 0,
+  "duplicates": 0,
+  "nan_cells": 0,
+  "power_at_night_nonzero_pct": 2.305,
+  "power_max": 2349.7,
+  "irradiation_max": 1220.3,
+  "unit_of_power": "INCONNUE - a confirmer (W suppose : max 2.35 kW pour ~1.2 kW/m2)"
+}

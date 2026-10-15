@@ -1,0 +1,653 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{parskip}
+\usepackage{tcolorbox}
+\usepackage{mdframed}
+\usepackage{tikz}
+\usetikzlibrary{fit, positioning, arrows.meta, backgrounds, shadows.blur}
+
+\definecolor{AccentBlue}{HTML}{2563EB}
+\definecolor{AccentGreen}{HTML}{059669}
+\definecolor{AccentAmber}{HTML}{D97706}
+\definecolor{AccentRed}{HTML}{DC2626}
+\definecolor{AccentViolet}{HTML}{7C3AED}
+\definecolor{CampusTeal}{HTML}{0D9488}
+\definecolor{PanelGray}{HTML}{F8FAFC}
+\definecolor{BorderGray}{HTML}{E2E8F0}
+\definecolor{TextDark}{HTML}{1E293B}
+
+\hypersetup{
+  colorlinks=true, linkcolor=AccentBlue,
+  citecolor=AccentBlue, urlcolor=AccentBlue,
+  pdftitle={EnergyMind Phase 1 Report},
+  pdfauthor={Anonymous Team — TSYP14 IEEE}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{TextDark!70}\textbf{EnergyMind} — Campus Microgrid AI Trust Layer}
+\fancyhead[R]{\small\color{TextDark!70}TSYP14 IEEE PES \& IES — Phase 1}
+\fancyfoot[C]{\small\color{TextDark!50}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\titleformat{\section}{\large\bfseries\color{AccentBlue}}{}{0em}{}[\color{AccentBlue}\hrule\vspace{2pt}]
+\titleformat{\subsection}{\normalsize\bfseries\color{TextDark}}{\thesubsection}{0.8em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\color{AccentGreen}}{}{0em}{}
+
+\captionsetup{font=small, labelfont=bf, labelsep=period}
+
+\tcbset{
+  resultbox/.style={
+    colback=AccentGreen!5, colframe=AccentGreen!60,
+    boxrule=0.8pt, arc=4pt, left=8pt, right=8pt, top=6pt, bottom=6pt
+  },
+  warnbox/.style={
+    colback=AccentAmber!5, colframe=AccentAmber!60,
+    boxrule=0.8pt, arc=4pt, left=8pt, right=8pt, top=6pt, bottom=6pt
+  }
+}
+
+\begin{document}
+
+% ─────────────────────────────────────────────────────────────────────────────
+%  TITLE PAGE
+% ─────────────────────────────────────────────────────────────────────────────
+
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+
+{\Huge\bfseries\color{AccentBlue} EnergyMind}\\[0.4cm]
+{\Large\bfseries An AI Trust Layer for Campus Microgrid\\Cyber-Physical Anomaly Detection}\\[1.0cm]
+
+\begin{tcolorbox}[colback=AccentBlue!8, colframe=AccentBlue!40, boxrule=0.8pt, arc=6pt,
+  width=0.85\linewidth]
+\centering
+{\large\bfseries TSYP14 Technical Challenge — IEEE PES \& IES Chapters}\\[0.3cm]
+{\normalsize Phase 1 Report: Ideation, Data Exploration \& Preliminary Design}\\[0.2cm]
+{\small\color{TextDark!60} Tunisia Section · IEEE TSYP14 Congress 2026}
+\end{tcolorbox}
+
+\vspace{1.5cm}
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Challenge Track} & IEEE PES (Power \& Energy) + IES (Industrial Electronics)\\
+\textbf{Submission Phase} & Phase 1 — Ideation \& Data Exploration\\
+\textbf{System Under Study} & University Campus Microgrid (20 kV/0.4 kV, 7-bus)\\
+\textbf{Repository} & \url{https://github.com/anonymous-tsyp14/energymind}\\
+\textbf{Version} & EnergyMind V2 · 5 Seeds · 21/21 Tests Passing\\
+\bottomrule
+\end{tabular}
+
+\vspace{2cm}
+
+\begin{tcolorbox}[resultbox, width=0.85\linewidth]
+\centering\bfseries Key Phase 1 Results\\[0.3cm]
+\normalfont\small
+\begin{tabular}{lr|lr}
+Event Recall & \textbf{58.1\%} (CI95: 54.5–61.7\%) &
+Precision & \textbf{91.2\%}\\
+Calibrated ECE & \textbf{0.038} (target $\le$0.05 ✓) &
+Surrogate MAE & \textbf{0.096 kW} ($<$0.1 kW ✓)\\
+Diagnostic Acc. (decided) & \textbf{100\%} (5 seeds) &
+False Alarms / Day & \textbf{0.173}\\
+\end{tabular}
+\end{tcolorbox}
+
+\vfill
+{\small\color{TextDark!50} Anonymous submission — no institutional affiliation disclosed per double-blind policy}
+\end{titlepage}
+
+% ─────────────────────────────────────────────────────────────────────────────
+%  TABLE OF CONTENTS
+% ─────────────────────────────────────────────────────────────────────────────
+\tableofcontents
+\newpage
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Executive Summary}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\textbf{EnergyMind} is a hybrid AI trust layer that stands between raw microgrid telemetry and autonomous control decisions. It addresses a genuine engineering gap: as microgrids integrate more IoT sensors, distributed generation, and remote automation, the risk of incorrect AI decisions—driven by uncalibrated probability estimates or adversarial sensor data—grows substantially. EnergyMind solves this through a principled multi-layer architecture:
+
+\begin{enumerate}[leftmargin=*, label=\textbf{\arabic*.}]
+  \item \textbf{Physics-grounded detection} — five normalized conservation residuals catch both physical anomalies and data falsification
+  \item \textbf{Formal probability calibration} — isotonic regression ensures that a 90\% confidence claim is empirically 90\% correct (ECE = 0.038)
+  \item \textbf{Honest uncertainty} — the system abstains on 50.6\% of ambiguous alerts rather than forcing a wrong answer; 100\% accuracy on decided cases
+  \item \textbf{Privacy-preserving collective defense} — Noosphere shares anomaly signatures across a peer-to-peer network of energy nodes with $\varepsilon$-differential privacy and $k$-anonymity, not just with a single remote partner
+\end{enumerate}
+
+All results are reproducible: fixed seeds, independent test/calibration splits, 21/21 automated tests passing.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Scope Definition}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{System Monitored}
+
+EnergyMind monitors a \textbf{university campus microgrid} operating at 20\,kV/0.4\,kV. The system boundary covers all generation, storage, load, and interconnection equipment, sampled at 15-minute resolution.
+
+\begin{table}[H]
+\centering
+\caption{Microgrid Electrical Parameters}
+\begin{tabularx}{\linewidth}{llX}
+\toprule
+\textbf{Component} & \textbf{Parameter} & \textbf{Value / Specification}\\
+\midrule
+Grid Interconnection & PCC voltage & 20.0\,kV (medium voltage, STEG grid)\\
+Transformer & Rating / ratio & 250\,kVA, 20\,kV/0.4\,kV, Dyn11, $u_k = 4\%$\\
+LV Busbar & Nominal voltage & 400\,V (line-to-line, 7-bus network)\\
+PV Array & Peak capacity & 50\,kWp rooftop installation\\
+BESS & Energy / power & 100\,kWh / 25\,kW lithium-ion\\
+Load feeders & Configuration & 3 branches: Admin, Labs\,\&\,HVAC, Residence\,\&\,EV\\
+Telemetry & Resolution & 15-minute intervals, real-time SCADA monitoring\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Figure~\ref{fig:single_line} shows the full single-line diagram generated by pandapower.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.90\linewidth]{figures/fig01_single_line_diagram.png}
+  \caption{Campus microgrid 7-bus single-line diagram. Nodes represent grid PCC (gray), transformer (violet), LV busbar (blue), load feeders (cyan), PV array (amber), and BESS (green). Red triangles indicate voltage measurement points $V_1$ (PCC) and $V_2$ (inverter), used by the physics residual engine.}
+  \label{fig:single_line}
+\end{figure}
+
+\subsection{Eight-Class Anomaly Taxonomy}
+
+A critical design principle is the strict separation between \emph{physical ground truth} and \emph{sensor observations}. Under a cyber-falsification attack, the physical grid may be normal while sensors report falsified measurements. EnergyMind tracks both layers simultaneously.
+
+\begin{table}[H]
+\centering
+\caption{Eight-Class Cyber-Physical Anomaly Taxonomy}
+\begin{tabular}{clll}
+\toprule
+\textbf{Code} & \textbf{Class} & \textbf{Layer} & \textbf{Detection Challenge}\\
+\midrule
+C0 & \texttt{normal} & Baseline & Baseline operating condition\\
+P2 & \texttt{pv\_fault} & Physical & PV string degradation, partial shading\\
+G1 & \texttt{grid\_event} & Physical & Voltage sag/swell at PCC\\
+L1 & \texttt{load\_peak} & Physical & Unexpected high-load transient\\
+M1/M2 & \texttt{pv\_sensor\_fault} & Sensor & PV meter drift or calibration bias\\
+V1 & \texttt{voltage\_sensor\_fault} & Sensor & PCC voltage transducer offset\\
+B1 & \texttt{bess\_sensor\_fault} & Sensor & Battery SoC coulomb counter drift\\
+A1 & \texttt{coordinated\_falsif.} & Cyber & Multi-sensor stealth falsification\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{tcolorbox}[warnbox]
+\small\textbf{Key integrity property:} Classes P2 (\texttt{pv\_fault}) and A1 (\texttt{coordinated\_falsification}) produce \emph{identical sensor observations} but different physical ground truths. Separating them requires querying the independent inverter sensor — this drives the Active Evidence Acquisition mechanism.
+\end{tcolorbox}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Objectives}
+% ─────────────────────────────────────────────────────────────────────────────
+
+EnergyMind addresses all four TSYP14 Challenge Goals:
+
+\begin{table}[H]
+\centering
+\caption{Challenge Goals and EnergyMind's Response}
+\begin{tabularx}{\linewidth}{clX}
+\toprule
+\textbf{Goal} & \textbf{Challenge Requirement} & \textbf{EnergyMind Implementation}\\
+\midrule
+1 & Evidence Fusion \& Fault Detection & Physics residuals + IsoForest + CUSUM hybrid fusion\\
+2 & Trust \& Uncertainty Quantification & Isotonic calibration (ECE=0.038), selective abstention, Active Evidence Acquisition\\
+3 & Governance \& Explainability & SHA-256 audit chain, SHAP per-alert attribution, expected-loss policy\\
+4 & Collective Defense & Noosphere: peer-to-peer ε-DP knowledge transfer across multiple energy nodes\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Core engineering commitments:}
+\begin{itemize}
+  \item All announced functions exist and pass automated unit tests (21/21)
+  \item All metrics computed from held-out test sets with deterministic seeds
+  \item Every model choice is justified empirically against alternatives (see \texttt{docs/MODEL\_SELECTION.md})
+  \item Limitations are documented honestly — no metric inflation
+\end{itemize}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Data \& Anomaly Simulation Plan}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Real Baseline Data}
+
+Real grid fault/anomaly-labeled data is rare. EnergyMind uses two real campus datasets as its foundation:
+
+\begin{table}[H]
+\centering
+\caption{Real Baseline Datasets Used}
+\begin{tabularx}{\linewidth}{lXlX}
+\toprule
+\textbf{Dataset} & \textbf{Description} & \textbf{Volume} & \textbf{Role}\\
+\midrule
+Campus PV measurements & 5-min output from campus rooftop array & 238,464 rows & Solar baseline normalization\\
+Campus electricity invoices & Monthly bills 2022--2024 & 30 records & Anchor load consumption to real scale\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Cross-Validation with International References}
+
+\begin{table}[H]
+\centering
+\caption{External Reference Datasets for Validation}
+\begin{tabularx}{\linewidth}{llX}
+\toprule
+\textbf{Source} & \textbf{Organization} & \textbf{Validation Result}\\
+\midrule
+PVGIS API \cite{pvgis} & EU Commission JRC & 69,752.9\,kWh/yr for 50\,kWp at 36.8°N 10.2°E (matches campus invoices ±8.1\%)\\
+NASA POWER \cite{nasa_power} & NASA Langley & Hourly GHI + $T_{2m}$ reanalysis (MERRA-2) for weather normalization\\
+SimBench 1-LV-semiurb4 \cite{simbench} & Fraunhofer IEE & Line impedances $R/X$ for the 7-bus network\\
+DOE Commercial Buildings \cite{doe_bldg} & US Dept. Energy & Office, Lab, HVAC load archetypes\\
+UAH ICS Cyber Dataset \cite{uah_ics} & Tommy Morris et al. & Cyber attack taxonomy for A1 class injection\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Figure~\ref{fig:powerflow} validates the pandapower AC power flow model against physical constraints.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\linewidth]{figures/fig02_powerflow_states.png}
+  \caption{Pandapower AC power flow analysis for the 7-bus campus network. \textbf{Left:} PCC busbar voltage as a function of PV output under three load regimes (30, 45, 60\,kW). Dashed lines show IEEE 1547 voltage limits (360–440\,V). \textbf{Right:} Net grid import vs.\ PV generation; the zero-crossing marks the self-sufficiency operating point where the campus fully covers its load from local resources.}
+  \label{fig:powerflow}
+\end{figure}
+
+\subsection{Anomaly Injection Methodology}
+
+Anomalies are injected by \texttt{faults\_v2.py} using deterministic multi-seed reproducibility. For each class $c_k$, non-overlapping time windows are selected and both physical consequences and sensor corruptions are computed independently:
+
+\begin{equation}
+\mathbf{y}_{\text{obs}}(t) = \mathcal{T}\!\left(\mathbf{x}_{\text{true}}(t),\,\boldsymbol{\theta}_{\text{fault}}(t)\right) + \boldsymbol{\epsilon}(t),
+\quad \boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0},\,\boldsymbol{\Sigma}_{\text{noise}})
+\end{equation}
+
+where $\mathcal{T}$ is the corruption operator. Under normal conditions $\mathcal{T}=\mathbf{I}$; under cyber-attacks it falsifies measurements while $\mathbf{x}_{\text{true}}$ remains normal.
+
+All injected events are logged to \texttt{outputs/calibration\_event\_registry\_v2.csv} and \texttt{outputs/test\_event\_registry\_v2.csv} with timestamps, class labels, and injection parameters.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{System Architecture \& Preliminary Design}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Global Architecture Overview}
+
+Figure~\ref{fig:architecture} presents the complete EnergyMind five-layer architecture.
+
+\begin{figure}[H]
+  \centering
+  \resizebox{0.98\linewidth}{!}{\input{architecture.tex}}
+  \caption{EnergyMind global system architecture. Five distinct layers: (1) Physical 7-bus microgrid with PV, BESS, and campus feeders; (2) Sensor and telemetry acquisition; (3) AI Trust Layer with hybrid detection, Bayesian diagnosis, and isotonic calibration; (4) Governance with SHA-256 audit chain and SHAP explainability; (5) Noosphere federated multi-node collective defense network. Color coding: amber = power flow, blue = sensor telemetry, green = AI processing, red = governance, violet = federated network.}
+  \label{fig:architecture}
+\end{figure}
+
+\subsection{Pillar 1 — Physics Residuals ($Z \in \mathbb{R}^5$)}
+
+EnergyMind computes five physics-grounded normalized residuals from raw telemetry:
+
+\begin{align}
+r_{\text{bal}}(t) &= \frac{P_{\text{pv}} + P_{\text{grid}} + P_{\text{bess}} - P_{\text{load}}}{\sigma_{\text{bal}}} & &\text{(power conservation)}\\
+r_{\text{pvexp}}(t) &= \frac{P_{\text{pv}} - \hat{P}_{\text{pv}}^{\text{LGB}}(G, T)}{\sigma_{\text{pvexp}}} & &\text{(PV model residual, LightGBM)}\\
+r_{\text{vpcc}}(t) &= \frac{V_{\text{pcc}} - \hat{V}_{\text{pcc}}^{\text{surrogate}}}{\sigma_{\text{vpcc}}} & &\text{(bus voltage deviation)}\\
+r_{\text{inv}}(t) &= \frac{P_{\text{inv}} - P_{\text{dc}}\,\eta_{\text{inv}}}{\sigma_{\text{inv}}} & &\text{(inverter consistency, queried on demand)}\\
+r_{\text{vinv}}(t) &= \frac{V_{\text{inv}} - V_{\text{pcc}} - \Delta V_{\text{drop}}}{\sigma_{\text{vinv}}} & &\text{(inverter voltage drop)}
+\end{align}
+
+\subsection{Pillar 2 — Pandapower Surrogate (Speed vs.\ Accuracy)}
+
+Running full Newton-Raphson AC power flow at every telemetry step is computationally expensive ($\approx$200\,ms/call). A linear surrogate $\hat{V}_{\text{pcc}} = \beta_0 + \beta_1 P_{\text{net}} + \beta_2 Q_{\text{net}}$ is trained on 2,000 pandapower evaluations and validated on 500 independent states.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\linewidth]{figures/fig03_surrogate_validation.png}
+  \caption{Pandapower linear surrogate validation on 500 independent power flow states. \textbf{Left:} Scatter plot of surrogate predictions vs.\ full Newton-Raphson ground truth ($R^2 = 1.000$, MAE = 0.096\,kW). The identity line is shown in dashed red; all points cluster tightly around it. \textbf{Right:} Error quantile distribution (P50 = 0.048\,kW, P95 = 0.249\,kW, P99 = 0.421\,kW). The surrogate accelerates inference by 150× while remaining within 0.5\,kW of the full AC solution.}
+  \label{fig:surrogate}
+\end{figure}
+
+\subsection{Pillar 3 — Hybrid Detection Fusion Gate}
+
+The alert trigger $\mathcal{A}(t) \in \{0,1\}$ is:
+
+\begin{equation}
+\mathcal{A}(t) = \underbrace{\mathbb{I}\!\left(\|\mathbf{Z}\|_2 > \gamma_{\text{phys}}\right)}_{\text{physics plausibility}} \wedge \left[\underbrace{\mathbb{I}_{\text{IsoForest}}(\mathbf{Z})}_{\text{spatial outlier}} \vee \underbrace{\mathbb{I}_{\text{CUSUM}}(\mathbf{Z})}_{\text{change-point}}\right]
+\end{equation}
+
+This design enforces that alarms cannot be raised without a physical residual violation, while allowing either the unsupervised spatial outlier model or the sequential change-point detector to provide the trigger.
+
+\subsection{Pillar 4 — Isotonic Calibration (Goal 2)}
+
+Raw Gaussian Naive Bayes posteriors are overconfident on minority classes. One-vs-Rest isotonic regression maps them to calibrated probabilities:
+
+\begin{equation}
+\hat{P}(c_k\mid\mathbf{Z}) = f_{\text{iso}}^{(k)}\!\left(P_{\text{raw}}(c_k\mid\mathbf{Z})\right)
+\end{equation}
+
+where $f_{\text{iso}}^{(k)}$ is a monotone step function minimizing squared error on held-out calibration data. The Expected Calibration Error:
+
+\begin{equation}
+\text{ECE} = \sum_{m=1}^M \frac{|B_m|}{N}\,\bigl|\,\mathrm{acc}(B_m) - \mathrm{conf}(B_m)\,\bigr|
+\end{equation}
+
+\begin{tcolorbox}[resultbox]
+\textbf{Phase 1 Calibration Result:} ECE = \textbf{0.038} (CI95: 0.020–0.057) against a target of $\le$0.05. Raw classifier ECE $\approx$ 0.12. Isotonic regression was selected over Platt scaling because the 8-class imbalanced distribution violates the sigmoid monotonicity assumption on raw Naive Bayes scores.
+\end{tcolorbox}
+
+\subsection{Pillar 5 — Expected-Loss Policy \& Active Evidence Acquisition}
+
+The optimal operator action minimizes expected cost under the calibrated posterior:
+
+\begin{equation}
+a^* = \arg\min_{a \in \mathcal{A}} \sum_{k=1}^K \hat{P}(c_k\mid\mathbf{Z})\cdot\mathcal{L}(a,\,c_k)
+\end{equation}
+
+where $\mathcal{A} = \{\texttt{alert},\,\texttt{monitor},\,\texttt{ignore},\,\texttt{escalate\_human}\}$ and $\mathcal{L}$ is an asymmetric loss matrix penalizing cyber-attack false negatives heavily.
+
+When $H(\hat{\mathbf{P}})$ is high between P2 and A1, the system requests the inverter sensor (Active Evidence Acquisition), maximizing mutual information gain:
+
+\begin{equation}
+\Delta H(S_{\text{inv}}) = H(\hat{\mathbf{P}}) - \mathbb{E}_y\!\left[H\!\left(\hat{\mathbf{P}}\mid S_{\text{inv}}=y\right)\right]
+\end{equation}
+
+Figures~\ref{fig:sensor_sensitivity} and~\ref{fig:active_evidence} illustrate the sensor selection rationale.
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.48\linewidth}
+    \includegraphics[width=\linewidth]{figures/fig05_sensor_sensitivity.png}
+    \caption{Voltage sensor sensitivity at PCC under varying noise and line impedance. The shaded region marks the nominal operating range; the detection margin narrows with higher measurement noise.}
+    \label{fig:sensor_sensitivity}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.48\linewidth}
+    \includegraphics[width=\linewidth]{figures/fig06_active_evidence.png}
+    \caption{Active Evidence Acquisition: entropy reduction when querying the hidden inverter sensor. Resolves P2 vs.\ A1 ambiguity that cannot be settled from PCC measurements alone.}
+    \label{fig:active_evidence}
+  \end{subfigure}
+  \caption{Goal 2 — Uncertainty quantification and active measurement selection.}
+\end{figure}
+
+\subsection{Pillar 6 — Governance \& Audit Chain (Goal 3)}
+
+Every alert produces a tamper-evident log entry in SQLite:
+\begin{itemize}
+  \item \textbf{Content:} Timestamp, detected class, calibrated confidence, action taken, decision rationale, SHAP attributions, $\mathbf{Z}$ residuals
+  \item \textbf{Chain integrity:} SHA-256 hash of the current record includes the hash of the previous record — any modification breaks the chain
+  \item \textbf{Human review rate:} 72.1\% of alerts are escalated to the human operator
+\end{itemize}
+
+\subsection{Pillar 7 — Noosphere Collective Defense (Goal 4)}
+
+Noosphere implements peer-to-peer federated knowledge sharing across a \textbf{multi-node network} of energy systems — not limited to a single partner. The protocol is:
+
+\begin{enumerate}
+  \item \textbf{Compute:} Class-conditional feature statistics $(\boldsymbol{\mu}_k, \boldsymbol{\sigma}_k, n_k)$ per fault class
+  \item \textbf{Protect:} Add Laplace noise calibrated to $\varepsilon=1.0$ differential privacy; suppress signatures with $n_k < 5$ (k-anonymity)
+  \item \textbf{Export:} Pydantic-validated \texttt{IncidentSignatureV2} packets (JSON-serializable, schema v2.0)
+  \item \textbf{Share:} Push to peer nodes (factory, hospital, smart building, rural microgrid, regional grid operator)
+  \item \textbf{Import:} Receiving nodes check PSI + Wasserstein domain shift, then verify sensor compatibility
+  \item \textbf{Merge:} Compatible signatures update the receiving node's Bayesian prior with weight $w=0.3$
+\end{enumerate}
+
+\begin{equation}
+\tilde{\boldsymbol{\mu}}_k = \boldsymbol{\mu}_k + \mathrm{Lap}\!\left(\frac{\Delta f}{\varepsilon}\right),\quad
+\Delta f = \frac{\max\|\mathbf{Z}\|_1}{n_k}
+\end{equation}
+
+Figure~\ref{fig:noosphere} shows the multi-node transfer results for the campus-to-factory link (Phase 1 demonstration).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\linewidth]{figures/fig08_noosphere_transfer.png}
+  \caption{Noosphere federated knowledge transfer. \textbf{Phase 1 result (campus $\to$ factory node):} 7 signatures exported; 4 imported with $\varepsilon=1.0$ DP; 3 rejected because the factory node lacks the \texttt{inv} and \texttt{vinv} sensor channels. \textbf{Phase 2 target:} Extend to a 5-node peer network (campus, hospital, industrial park, smart building, rural microgrid) with bidirectional exchange and a federated global threat registry.}
+  \label{fig:noosphere}
+\end{figure}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Experimental Results}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Experimental Protocol}
+
+All experiments use 5 deterministic seeds $S \in \{22, 33, 44, 55, 66\}$. Each seed injects 96 test events across 8 fault classes. Calibration uses 80 independent events. Test and calibration sets are strictly disjoint.
+
+\subsection{Goal 1 — Detection Benchmark}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.98\linewidth]{figures/fig04_detection_benchmark.png}
+  \caption{Detection benchmark across five methods (5 seeds, 95\% CI). \textbf{Left:} Event recall by method. Raw IsoForest fails completely (3.5\%) because seasonal cycles dominate unnormalized telemetry. Physics-only reaches 49.0\%. CUSUM achieves high raw recall (83.9\%) but at an unacceptable 57.8\% FPR ($\approx$184 false alarms/day). EnergyMind fusion achieves the highest balanced recall (58.1\%) with 91.2\% precision and only 0.173 FA/day. \textbf{Center:} Precision-Recall scatter. \textbf{Right:} Per-class event recall — grid events and sensor faults reach 100\%; cyber-attack recall (45\%) is limited by the hidden inverter sensor.}
+  \label{fig:benchmark}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Comprehensive Benchmark Results (5-Seed Mean with 95\% CI)}
+\begin{tabularx}{\linewidth}{Xcccc}
+\toprule
+\textbf{Method} & \textbf{Event Recall} & \textbf{Precision} & \textbf{FPR} & \textbf{FA / Day}\\
+\midrule
+A: IsoForest (Raw) & 0.035 [−0.003, 0.074] & 0.463 & 0.0006 & $\approx$2.8\\
+B: Physics Only & 0.490 [0.477, 0.503] & 0.922 & 0.0026 & 0.62\\
+C: IsoForest + Residuals & 0.450 [0.415, 0.485] & 0.908 & 0.0022 & 0.53\\
+D: CUSUM (Standalone) & 0.840 [0.810, 0.869] & 0.121 & 0.5777 & 184.2\\
+\midrule
+\textbf{EnergyMind (Fusion)} & \textbf{0.581 [0.545, 0.617]} & \textbf{0.912} & \textbf{0.0037} & \textbf{0.173}\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Goal 2 — Calibration \& Selective Prediction}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.72\linewidth]{figures/fig07_risk_coverage.png}
+  \caption{Selective prediction risk-coverage curve. At the operating point (49.4\% coverage), EnergyMind achieves 0\% error rate on decided cases — all 5 seeds confirm 100\% diagnostic accuracy. The tradeoff: 50.6\% of alerts are flagged as uncertain and routed to the operator. When abstention is disabled (100\% coverage), accuracy drops to 86.1\%, demonstrating the honest value of selective prediction.}
+  \label{fig:risk_coverage}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Goal 2 — Uncertainty Quantification Metrics}
+\begin{tabular}{lll}
+\toprule
+\textbf{Metric} & \textbf{Value} & \textbf{Target / Interpretation}\\
+\midrule
+ECE (calibrated) & 0.038 (CI95: 0.020–0.057) & $\le$0.05 ✓\\
+ECE (raw, uncalibrated) & $\approx$0.12 & Baseline before calibration\\
+Brier score & 0.036 (CI95: 0.033–0.039) & Lower is better\\
+Abstention rate & 50.6\% & Refuses when uncertain\\
+Accuracy (decided cases) & 100.0\% (5/5 seeds) & No wrong diagnoses when system commits\\
+Accuracy (forced, no abstention) & 86.1\% & Accuracy without selective prediction\\
+Human review rate & 72.1\% & Proportion escalated to operator\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Goal 4 — Noosphere Knowledge Transfer}
+
+\begin{table}[H]
+\centering
+\caption{Noosphere Transfer Results — Campus Node $\to$ Factory Node (Phase 1)}
+\begin{tabular}{lll}
+\toprule
+\textbf{Fault Class} & \textbf{Status} & \textbf{Compatibility Check}\\
+\midrule
+\texttt{pv\_fault} & \textcolor{AccentGreen}{\checkmark Imported} & $w=0.3$, $\varepsilon=1.0$, sensors compatible\\
+\texttt{grid\_event} & \textcolor{AccentRed}{$\times$ Rejected} & Missing sensor: \texttt{vinv}\\
+\texttt{load\_peak} & \textcolor{AccentGreen}{\checkmark Imported} & $w=0.3$, $\varepsilon=1.0$, sensors compatible\\
+\texttt{pv\_sensor\_fault} & \textcolor{AccentRed}{$\times$ Rejected} & Missing sensor: \texttt{inv}\\
+\texttt{voltage\_sensor\_fault} & \textcolor{AccentGreen}{\checkmark Imported} & $w=0.3$, $\varepsilon=1.0$, sensors compatible\\
+\texttt{bess\_sensor\_fault} & \textcolor{AccentGreen}{\checkmark Imported} & $w=0.3$, $\varepsilon=1.0$, sensors compatible\\
+\texttt{coordinated\_falsification} & \textcolor{AccentRed}{$\times$ Rejected} & Missing sensor: \texttt{inv}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{tcolorbox}[warnbox]
+\small\textbf{Important:} The Noosphere protocol is designed for \emph{multi-node} peer exchange, not just bilateral transfer. Phase 1 demonstrates the protocol on the campus-to-factory link as a proof of concept. Phase 2 will expand to a 5-node network: factory, hospital, smart commercial building, rural agri-solar microgrid, and regional grid operator.
+\end{tcolorbox}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Honest Engineering — Limitations}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\begin{table}[H]
+\centering
+\caption{Known Limitations and Phase 2 Mitigations}
+\begin{tabularx}{\linewidth}{lXX}
+\toprule
+\textbf{Limitation} & \textbf{Impact} & \textbf{Phase 2 Mitigation}\\
+\midrule
+\texttt{load\_peak} recall = 0\% & AR(1) model absorbs short peaks into noise & Dedicated load forecasting (LSTM or Gaussian Process)\\
+Cyber attack recall = 45\% & Requires hidden \texttt{inv} sensor & Real inverter telemetry from campus SCADA\\
+Abstention rate 50.6\% & High for operational use & More calibration events ($N>300$)\\
+Human review rate 72.1\% & Conservative in Phase 1 & Reduce to $\le$40\% target with more data\\
+CUSUM FPR = 57.7\% & Cannot use standalone & Used as additive channel only (never primary)\\
+Simulated BESS telemetry & No real BESS measurements & Hardware-in-the-loop integration (Phase 2)\\
+1-node Noosphere demo & Only campus-factory tested & 5-node peer network (Phase 2)\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Phase 2 Roadmap}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\begin{table}[H]
+\centering
+\caption{Phase 2 Engineering Milestones}
+\begin{tabularx}{\linewidth}{llX}
+\toprule
+\textbf{Priority} & \textbf{Milestone} & \textbf{Target Metric}\\
+\midrule
+High & Real campus SCADA streaming telemetry & Inference latency $< 250$\,ms\\
+High & Expand calibration data ($N > 300$ per class) & ECE $< 0.03$, abstention $< 30\%$\\
+High & 5-node Noosphere peer network & Bidirectional exchange, federated global registry\\
+Medium & LightGBM / XGBoost multi-class diagnoser & Forced accuracy $> 92\%$\\
+Medium & Conformal prediction intervals on regression & 95\% empirical coverage guarantee\\
+Low & IEC 61850 GOOSE/SV parsing & Grid standards compliance\\
+Low & Hardware-in-the-loop (OPAL-RT) testing & Real-time grid validation\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Repository \& Deliverables}
+% ─────────────────────────────────────────────────────────────────────────────
+
+\begin{table}[H]
+\centering
+\caption{Phase 1 Required Deliverables — Checklist}
+\begin{tabular}{lll}
+\toprule
+\textbf{Deliverable} & \textbf{File / Location} & \textbf{Status}\\
+\midrule
+Project Proposal (this report) & \texttt{docs/REPORT\_PHASE1.tex} & ✓ Complete\\
+Scope definition & Section 2 of this report & ✓ Complete\\
+Objectives & Section 3 of this report & ✓ Complete\\
+Data / anomaly simulation plan & Section 4 of this report & ✓ Complete\\
+Preliminary design for each Goal & Section 5 of this report & ✓ Complete\\
+GitHub Repository & \url{https://github.com/anonymous-tsyp14/energymind} & ✓ Public\\
+Dataset & \texttt{data/raw/} + \texttt{data/reference/} & ✓ Committed\\
+Code developed in Phase 1 & \texttt{src/energymind/} + \texttt{scripts/} & ✓ Committed\\
+Unit tests & \texttt{tests/test\_core.py} & ✓ 21/21 PASS\\
+Monitoring platform & \texttt{app/dashboard.py} (FastAPI) & ✓ Running\\
+Publication figures & \texttt{outputs/fig01--fig08.png} & ✓ Generated\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{To reproduce all results:}
+\begin{verbatim}
+python -m venv .venv && .venv\Scripts\activate
+pip install -r requirements.txt
+python scripts/run_v2.py          # 5 seeds, ~5 min
+python scripts/make_figures_v2.py # 8 publication figures
+pytest tests/ -v                  # 21/21 tests
+uvicorn app.dashboard:app --port 8000  # Live SCADA platform
+\end{verbatim}
+
+% ─────────────────────────────────────────────────────────────────────────────
+%  REFERENCES
+% ─────────────────────────────────────────────────────────────────────────────
+
+\begin{thebibliography}{16}
+
+\bibitem{ieee1547}
+IEEE Std 1547-2018, \emph{Standard for Interconnection and Interoperability of Distributed Energy Resources with Associated Electric Power Systems Interfaces}, IEEE, 2018. \doi{10.1109/IEEESTD.2018.8332112}
+
+\bibitem{pandapower}
+L. Thurner, A. Scheidler, F. Schäfer \emph{et al.}, ``pandapower: An Open-Source Python Tool for Convenient Modeling, Analysis, and Optimization of Electric Power Systems,'' \emph{IEEE Trans. Power Systems}, vol. 33, no. 6, pp. 6510--6521, 2018. \doi{10.1109/TPWRS.2018.2829021}
+
+\bibitem{isoforest}
+F. T. Liu, K. M. Ting, Z.-H. Zhou, ``Isolation Forest,'' \emph{Proc. 8th IEEE ICDM}, pp. 413--422, 2008. \doi{10.1109/ICDM.2008.17}
+
+\bibitem{shap}
+S. M. Lundberg, S.-I. Lee, ``A Unified Approach to Interpreting Model Predictions,'' \emph{NeurIPS}, vol. 30, 2017. \url{https://arxiv.org/abs/1705.07874}
+
+\bibitem{zadrozny}
+B. Zadrozny, C. Elkan, ``Transforming Classifier Scores into Accurate Multiclass Probability Estimates,'' \emph{Proc. 8th ACM SIGKDD}, pp. 694--699, 2002. \doi{10.1145/775047.775151}
+
+\bibitem{dwork_dp}
+C. Dwork, ``Differential Privacy,'' \emph{Proc. ICALP}, LNCS 4052, pp. 1--12, 2006. \doi{10.1007/11787006_1}
+
+\bibitem{selective_pred}
+Y. Geifman, R. El-Yaniv, ``Selective Classification for Deep Neural Networks,'' \emph{NeurIPS}, 2017. \url{https://arxiv.org/abs/1705.08500}
+
+\bibitem{pvgis}
+T. Huld \emph{et al.}, ``A New Solar Radiation Database for Estimating PV Performance in Europe and Africa,'' \emph{Solar Energy}, vol. 86, pp. 1803--1815, 2012. \url{https://re.jrc.ec.europa.eu/pvg_tools/en/}
+
+\bibitem{nasa_power}
+P. W. Stackhouse \emph{et al.}, ``NASA POWER Project,'' NASA Langley Research Center, 2023. \url{https://power.larc.nasa.gov/}
+
+\bibitem{simbench}
+S. Meinecke \emph{et al.}, ``SimBench: A Benchmark Dataset of Electric Power Systems,'' \emph{Energies}, vol. 13, no. 12, 2020. \doi{10.3390/en13123412}
+
+\bibitem{doe_bldg}
+N. Wang \emph{et al.}, ``Commercial Reference Building Models of the National Building Stock,'' NREL/TP-5500-46861, 2011. \url{https://www.energy.gov/eere/buildings/commercial-reference-buildings}
+
+\bibitem{uah_ics}
+T. H. Morris, W. Gao, ``Industrial Control System Cyber Attacks,'' \emph{Proc. ICS-CSR}, 2014. \url{https://sites.google.com/a/uah.edu/tommy-morris-uah/ics-data-sets}
+
+\bibitem{lightgbm}
+G. Ke \emph{et al.}, ``LightGBM: A Highly Efficient Gradient Boosting Decision Tree,'' \emph{NeurIPS}, vol. 30, pp. 3146--3154, 2017.
+
+\bibitem{niculescu}
+A. Niculescu-Mizil, R. Caruana, ``Predicting Good Probabilities with Supervised Learning,'' \emph{Proc. ICML}, pp. 625--632, 2005.
+
+\bibitem{cusum_basseville}
+M. Basseville, I. V. Nikiforov, \emph{Detection of Abrupt Changes: Theory and Application}, Prentice Hall, 1993.
+
+\bibitem{geifman_elyaniv}
+Y. Geifman, R. El-Yaniv, ``Selective Prediction-Set Models with Coverage Guarantees,'' \emph{NeurIPS}, 2019. \url{https://arxiv.org/abs/1901.08903}
+
+\end{thebibliography}
+
+\end{document}

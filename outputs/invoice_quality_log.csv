@@ -1,0 +1,10 @@
+row,issue,detail
+19,month_relabeled,"08/2022 -> 08/2023 (rupture de sequence, A CONFIRMER avec la direction technique)"
+20,month_relabeled,"09/2022 -> 09/2023 (rupture de sequence, A CONFIRMER avec la direction technique)"
+24,orphan_row,ligne sans mois (total seul) : exclue
+29,month_relabeled,"05/2022 -> 05/2024 (rupture de sequence, A CONFIRMER avec la direction technique)"
+10,missing_consumption,2022-11 : facture absente
+11,missing_consumption,2022-12 : facture absente
+20,suspect_values,"2023-09 : incoherence prix/total/format (kWh=13254.0, cost=8856.914, total=5633.264)"
+21,suspect_values,"2023-10 : incoherence prix/total/format (kWh=16723.5, cost=7366.5385, total=6795.462)"
+29,suspect_values,"2024-05 : incoherence prix/total/format (kWh=22685.0, cost=6601.335, total=88883.158)"

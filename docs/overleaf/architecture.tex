@@ -1,0 +1,298 @@
+% ============================================================
+%  EnergyMind — Global System Architecture Diagram (TikZ)
+%  For inclusion in the Phase 1 report and GitHub README
+% ============================================================
+\documentclass[tikz, border=8pt]{standalone}
+
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage[T1]{fontenc}
+
+\usetikzlibrary{
+  fit, positioning, arrows.meta,
+  backgrounds, shadows.blur,
+  decorations.pathreplacing
+}
+
+\definecolor{GridOrange}{HTML}{F97316}
+\definecolor{GridAmber}{HTML}{FBBF24}
+\definecolor{SensorBlue}{HTML}{3B82F6}
+\definecolor{SensorLightBlue}{HTML}{BFDBFE}
+\definecolor{AIGreen}{HTML}{10B981}
+\definecolor{AILightGreen}{HTML}{A7F3D0}
+\definecolor{GovernRed}{HTML}{EF4444}
+\definecolor{GovernLightRed}{HTML}{FECACA}
+\definecolor{NoosphereViolet}{HTML}{8B5CF6}
+\definecolor{NoosphereLightViolet}{HTML}{DDD6FE}
+\definecolor{NodeBg}{HTML}{F8FAFC}
+\definecolor{LayerBg}{HTML}{F1F5F9}
+\definecolor{TextDark}{HTML}{1E293B}
+\definecolor{TextMuted}{HTML}{64748B}
+\definecolor{CampusTeal}{HTML}{0D9488}
+
+\begin{document}
+\begin{tikzpicture}[
+  font=\footnotesize\sffamily,
+  every node/.style={text=TextDark},
+  box/.style={
+    draw, rounded corners=4pt,
+    fill=white, minimum width=2.0cm,
+    minimum height=0.75cm, align=center,
+    blur shadow={shadow blur steps=4, shadow xshift=0.5pt, shadow yshift=-0.5pt}
+  },
+  layerbg/.style={
+    rounded corners=6pt,
+    fill=#1, draw=#1!60!black,
+    fill opacity=0.12, draw opacity=0.5,
+    line width=0.8pt
+  },
+  arrow/.style={-Stealth, line width=1.0pt, color=#1},
+  label/.style={font=\tiny\sffamily\bfseries, text=#1},
+]
+
+% =============================================================================
+%  LAYER 1 — PHYSICAL MICROGRID  (bottom)
+% =============================================================================
+
+\node[box, fill=GridAmber!15, draw=GridAmber!70] (grid) at (-4.8, 0) {%
+  \textbf{Grid PCC}\\\footnotesize 20\,kV (STEG)};
+
+\node[box, fill=GridAmber!15, draw=GridAmber!70] (trafo) at (-2.0, 0) {%
+  \textbf{Transformer}\\\footnotesize 250\,kVA 20/0.4\,kV};
+
+\node[box, fill=GridOrange!15, draw=GridOrange!70] (pv) at (0.6, 0) {%
+  \textbf{PV Array}\\\footnotesize 50\,kWp Rooftop};
+
+\node[box, fill=AIGreen!15, draw=AIGreen!60] (bess) at (3.0, 0) {%
+  \textbf{BESS}\\\footnotesize 100\,kWh / 25\,kW};
+
+\node[box, fill=SensorBlue!10, draw=SensorBlue!50] (load1) at (5.4, 0.45) {%
+  \textbf{Admin}\\\footnotesize Office Load};
+
+\node[box, fill=SensorBlue!10, draw=SensorBlue!50] (load2) at (7.6, 0) {%
+  \textbf{Labs \& HVAC}\\\footnotesize Research Load};
+
+\node[box, fill=SensorBlue!10, draw=SensorBlue!50] (load3) at (5.4, -0.45) {%
+  \textbf{Residence}\\\footnotesize Student / EV};
+
+\node[box, fill=white, draw=TextMuted!50, minimum width=1.0cm] (bus) at (5.4, 0) {%
+  \textbf{LV Bus}\\\footnotesize 0.4\,kV};
+
+\draw[arrow=GridAmber!80, line width=1.5pt] (grid) -- (trafo) node[midway, above, label=TextMuted]{\scriptsize 20\,kV};
+\draw[arrow=GridAmber!80, line width=1.5pt] (trafo) -- (bus) node[midway, above, label=TextMuted]{\scriptsize 0.4\,kV};
+\draw[arrow=GridOrange!80, line width=1.5pt] (pv) -- (bus) node[midway, above, label=TextMuted]{\scriptsize AC};
+\draw[arrow=AIGreen!80, line width=1.5pt] (bess) -- (bus) node[midway, above, label=TextMuted]{\scriptsize DC/AC};
+\draw[arrow=SensorBlue!60] (bus) -- (load1);
+\draw[arrow=SensorBlue!60] (bus) -- (load2);
+\draw[arrow=SensorBlue!60] (bus) -- (load3);
+
+\begin{scope}[on background layer]
+  \node[layerbg=GridAmber, fit=(grid)(trafo)(pv)(bess)(bus)(load1)(load2)(load3),
+        inner sep=10pt, label distance=4pt] (phys_layer) {};
+  \node[above left=2pt and 2pt of phys_layer.north west,
+        font=\small\bfseries\sffamily, text=GridAmber!80!black]
+        {\textcircled{\scriptsize 1}\quad Physical Microgrid — 7-Bus Campus Network};
+\end{scope}
+
+% =============================================================================
+%  LAYER 2 — SENSOR & TELEMETRY  (above physical)
+% =============================================================================
+
+\node[box, fill=SensorBlue!20, draw=SensorBlue, minimum width=2.2cm] (s_pv) at (-0.5, 2.0) {%
+  \textbf{PV Meter}\\\footnotesize $P_{\text{pv}}$, $V_{\text{inv}}$};
+
+\node[box, fill=SensorBlue!20, draw=SensorBlue, minimum width=2.2cm] (s_pcc) at (2.2, 2.0) {%
+  \textbf{PCC Sensor}\\\footnotesize $V_{\text{pcc}}$, $P_{\text{grid}}$};
+
+\node[box, fill=SensorBlue!20, draw=SensorBlue, minimum width=2.2cm] (s_bess) at (4.9, 2.0) {%
+  \textbf{BESS Monitor}\\\footnotesize $P_{\text{bess}}$, SoC\%};
+
+\node[box, fill=SensorBlue!20, draw=SensorBlue, minimum width=2.2cm] (s_load) at (7.6, 2.0) {%
+  \textbf{Smart Meters}\\\footnotesize $P_{\text{load}}$ × 3 feeders};
+
+\node[box, fill=GridAmber!10, draw=GridAmber!60, minimum width=2.2cm] (s_wx) at (-3.0, 2.0) {%
+  \textbf{Weather Sensor}\\\footnotesize GHI, $T_{\text{amb}}$};
+
+\draw[arrow=SensorBlue!50, dashed] (pv.north) -- (s_pv.south);
+\draw[arrow=SensorBlue!50, dashed] (bus.north) -- (s_pcc.south);
+\draw[arrow=SensorBlue!50, dashed] (bess.north) -- (s_bess.south);
+\draw[arrow=SensorBlue!50, dashed] (load2.north) -- (s_load.south);
+
+\begin{scope}[on background layer]
+  \node[layerbg=SensorBlue, fit=(s_wx)(s_pv)(s_pcc)(s_bess)(s_load),
+        inner sep=10pt] (sens_layer) {};
+  \node[above left=2pt and 2pt of sens_layer.north west,
+        font=\small\bfseries\sffamily, text=SensorBlue!80!black]
+        {\textcircled{\scriptsize 2}\quad Sensor \& Telemetry Layer — 15-min Resolution};
+\end{scope}
+
+% =============================================================================
+%  LAYER 3 — ENERGYMIND AI TRUST LAYER  (center)
+% =============================================================================
+
+% --- Feature Engine ---
+\node[box, fill=AIGreen!20, draw=AIGreen, minimum width=2.5cm] (feat) at (0.0, 4.2) {%
+  \textbf{Feature Engine}\\\footnotesize $Z\!\in\!\mathbb{R}^5$ Residuals\\\footnotesize LightGBM PV Model};
+
+\node[box, fill=AIGreen!20, draw=AIGreen, minimum width=2.5cm] (surr) at (3.0, 4.2) {%
+  \textbf{Pandapower}\\\footnotesize AC Power Flow\\\footnotesize + Linear Surrogate};
+
+% --- Detection Layer ---
+\node[box, fill=AIGreen!30, draw=AIGreen!80, minimum width=2.2cm] (isoF) at (-1.8, 5.7) {%
+  \textbf{Isolation Forest}\\\footnotesize Spatial Outlier};
+
+\node[box, fill=AIGreen!30, draw=AIGreen!80, minimum width=2.2cm] (phys) at (0.8, 5.7) {%
+  \textbf{Physics Rules}\\\footnotesize Residual Threshold};
+
+\node[box, fill=AIGreen!30, draw=AIGreen!80, minimum width=2.2cm] (cusum) at (3.4, 5.7) {%
+  \textbf{CUSUM}\\\footnotesize Change-Point};
+
+\node[box, fill=AIGreen!40, draw=AIGreen, minimum width=3.0cm] (fusion) at (0.8, 7.0) {%
+  \textbf{Fusion Gate}\\\footnotesize Physics AND (IsoForest OR CUSUM)};
+
+% --- Diagnosis & Calibration ---
+\node[box, fill=AIGreen!20, draw=AIGreen, minimum width=2.5cm] (diag) at (5.6, 5.7) {%
+  \textbf{Bayesian Diagnoser}\\\footnotesize Gaussian NB — 8 Classes\\\footnotesize Raw Posterior};
+
+\node[box, fill=AIGreen!30, draw=AIGreen, minimum width=2.5cm] (calib) at (5.6, 7.0) {%
+  \textbf{Isotonic Calibrator}\\\footnotesize ECE = 0.038\\\footnotesize $\le$ 0.05 target};
+
+\node[box, fill=AIGreen!30, draw=AIGreen, minimum width=2.5cm] (aei) at (5.6, 8.3) {%
+  \textbf{Active Evidence}\\\footnotesize Entropy Reduction\\\footnotesize Query Inverter Sensor};
+
+% --- Arrows within AI layer ---
+\draw[arrow=AIGreen] (feat) -- (isoF);
+\draw[arrow=AIGreen] (feat) -- (phys);
+\draw[arrow=AIGreen] (feat) -- (cusum);
+\draw[arrow=AIGreen] (surr) -- (diag);
+\draw[arrow=AIGreen] (isoF) -- (fusion);
+\draw[arrow=AIGreen] (phys) -- (fusion);
+\draw[arrow=AIGreen] (cusum) -- (fusion);
+\draw[arrow=AIGreen] (feat) -- (diag);
+\draw[arrow=AIGreen] (diag) -- (calib);
+\draw[arrow=AIGreen] (calib) -- (aei);
+
+\begin{scope}[on background layer]
+  \node[layerbg=AIGreen, fit=(feat)(surr)(isoF)(phys)(cusum)(fusion)(diag)(calib)(aei),
+        inner sep=12pt] (ai_layer) {};
+  \node[above left=2pt and 2pt of ai_layer.north west,
+        font=\small\bfseries\sffamily, text=AIGreen!80!black]
+        {\textcircled{\scriptsize 3}\quad EnergyMind AI Trust Layer};
+\end{scope}
+
+% Sensors → Feature Engine
+\draw[arrow=SensorBlue, line width=1.3pt] (sens_layer.north -| feat) -- (feat.south)
+    node[midway, right, label=TextMuted]{\scriptsize Raw Telemetry};
+
+% =============================================================================
+%  LAYER 4 — GOVERNANCE & EXPLAINABILITY  (right side)
+% =============================================================================
+
+\node[box, fill=GovernRed!10, draw=GovernRed!60, minimum width=2.5cm] (risk) at (9.4, 5.7) {%
+  \textbf{Risk Policy}\\\footnotesize Expected-Loss Decision\\\footnotesize 4 Actions};
+
+\node[box, fill=GovernRed!10, draw=GovernRed!60, minimum width=2.5cm] (shap) at (9.4, 7.0) {%
+  \textbf{SHAP Explainer}\\\footnotesize Feature Attribution\\\footnotesize per Alert};
+
+\node[box, fill=GovernRed!20, draw=GovernRed, minimum width=2.5cm] (audit) at (9.4, 8.3) {%
+  \textbf{Audit Chain}\\\footnotesize SHA-256 Tamper-Proof\\\footnotesize SQLite Log};
+
+\node[box, fill=GovernRed!10, draw=GovernRed!60, minimum width=2.5cm] (human) at (9.4, 9.6) {%
+  \textbf{Human Operator}\\\footnotesize Review \& Override\\\footnotesize 72.1\% escalation};
+
+\draw[arrow=GovernRed] (calib) -- (risk);
+\draw[arrow=GovernRed] (risk) -- (shap);
+\draw[arrow=GovernRed] (shap) -- (audit);
+\draw[arrow=GovernRed] (audit) -- (human);
+
+\begin{scope}[on background layer]
+  \node[layerbg=GovernRed, fit=(risk)(shap)(audit)(human),
+        inner sep=10pt] (gov_layer) {};
+  \node[above right=2pt and 2pt of gov_layer.north east,
+        font=\small\bfseries\sffamily, text=GovernRed!80!black, align=right]
+        {Goal 3 — Governance\\\& Explainability \textcircled{\scriptsize 4}};
+\end{scope}
+
+% =============================================================================
+%  LAYER 5 — NOOSPHERE MULTI-NODE NETWORK  (top)
+% =============================================================================
+
+\node[box, fill=CampusTeal!20, draw=CampusTeal, minimum width=2.6cm, line width=1.2pt] (campus) at (2.5, 10.8) {%
+  \textbf{Campus Node}\\\footnotesize \textit{Source — This System}\\\footnotesize $\varepsilon$-DP Export};
+
+\node[box, fill=NoosphereViolet!15, draw=NoosphereViolet!70, minimum width=2.2cm] (factory) at (-2.0, 12.4) {%
+  \textbf{Factory Node}\\\footnotesize PV + Industrial\\\footnotesize 4 imported};
+
+\node[box, fill=NoosphereViolet!15, draw=NoosphereViolet!70, minimum width=2.2cm] (hospital) at (0.8, 13.2) {%
+  \textbf{Hospital Node}\\\footnotesize Critical Load\\\footnotesize Peer Exchange};
+
+\node[box, fill=NoosphereViolet!15, draw=NoosphereViolet!70, minimum width=2.2cm] (smart) at (4.2, 13.2) {%
+  \textbf{Smart Building}\\\footnotesize Commercial MG\\\footnotesize Peer Exchange};
+
+\node[box, fill=NoosphereViolet!15, draw=NoosphereViolet!70, minimum width=2.2cm] (rural) at (7.0, 12.4) {%
+  \textbf{Rural Microgrid}\\\footnotesize Agri-Solar\\\footnotesize Peer Exchange};
+
+\node[box, fill=NoosphereViolet!25, draw=NoosphereViolet, minimum width=2.8cm, line width=1.2pt] (registry) at (2.5, 14.0) {%
+  \textbf{Global Threat Registry}\\\footnotesize Federated Consensus\\\footnotesize k-Anonymity $\ge$ 5};
+
+% Arrows — campus exports to all peers
+\draw[arrow=NoosphereViolet, line width=1.2pt] (campus) -- (factory)
+    node[midway, left, label=NoosphereViolet!80]{\tiny $\varepsilon$=1.0};
+\draw[arrow=NoosphereViolet, line width=1.2pt] (campus) -- (hospital);
+\draw[arrow=NoosphereViolet, line width=1.2pt] (campus) -- (smart);
+\draw[arrow=NoosphereViolet, line width=1.2pt] (campus) -- (rural);
+% All peers → registry
+\draw[arrow=NoosphereViolet!60, dashed] (factory) -- (registry);
+\draw[arrow=NoosphereViolet!60, dashed] (hospital) -- (registry);
+\draw[arrow=NoosphereViolet!60, dashed] (smart) -- (registry);
+\draw[arrow=NoosphereViolet!60, dashed] (rural) -- (registry);
+% Bidirectional peer sync
+\draw[Stealth-Stealth, NoosphereViolet!50, line width=0.8pt, dashed] (factory) -- (hospital);
+\draw[Stealth-Stealth, NoosphereViolet!50, line width=0.8pt, dashed] (hospital) -- (smart);
+\draw[Stealth-Stealth, NoosphereViolet!50, line width=0.8pt, dashed] (smart) -- (rural);
+
+\begin{scope}[on background layer]
+  \node[layerbg=NoosphereViolet, fit=(campus)(factory)(hospital)(smart)(rural)(registry),
+        inner sep=14pt] (noo_layer) {};
+  \node[above left=2pt and 2pt of noo_layer.north west,
+        font=\small\bfseries\sffamily, text=NoosphereViolet!80!black]
+        {\textcircled{\scriptsize 5}\quad Noosphere — Federated Multi-Node Collective Defense};
+\end{scope}
+
+% Connect AI layer → Campus Node (Noosphere export)
+\draw[arrow=CampusTeal, line width=1.3pt] (aei.north) -- (campus.south)
+    node[midway, right, label=CampusTeal]{\scriptsize Pydantic Packets + DP Noise};
+
+\draw[arrow=AIGreen, line width=1.1pt] (fusion.east) -- (diag.west)
+    node[midway, above, label=AIGreen]{\scriptsize Alert};
+
+% =============================================================================
+%  REFERENCE DATA — right side annotation
+% =============================================================================
+
+\node[align=left, text=TextMuted, font=\tiny\sffamily] at (12.0, 2.5) {%
+  \textbf{External Reference Data}\\\vspace{2pt}
+  PVGIS (EU JRC)\\69,752\,kWh/yr\\
+  NASA POWER\\GHI + T$_{2m}$\\
+  SimBench 1-LV\\Network topology\\
+  DOE Buildings\\Load archetypes\\
+  UAH ICS Dataset\\Attack taxonomy};
+
+\draw[TextMuted!40, dashed, thin] (11.0, 2.5) -- (surr.east);
+
+% =============================================================================
+%  LEGEND
+% =============================================================================
+
+\node[align=left, font=\tiny\sffamily] at (-6.0, 8.0) {%
+  \textbf{\small Legend}\\\vspace{4pt}
+  \textcolor{GridAmber}{\rule{12pt}{3pt}}\;Physical Power Flow\\[2pt]
+  \textcolor{SensorBlue}{\rule{12pt}{3pt}}\;Sensor Telemetry\\[2pt]
+  \textcolor{AIGreen}{\rule{12pt}{3pt}}\;AI Trust Processing\\[2pt]
+  \textcolor{GovernRed}{\rule{12pt}{3pt}}\;Governance \& Audit\\[2pt]
+  \textcolor{NoosphereViolet}{\rule{12pt}{3pt}}\;Federated Knowledge\\[2pt]
+  \textcolor{CampusTeal}{\rule{12pt}{3pt}}\;Campus Source Node\\[4pt]
+  \textcolor{TextMuted}{- -}\;Optional / Dashed channel};
+
+\end{tikzpicture}
+\end{document}

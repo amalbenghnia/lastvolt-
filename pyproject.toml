@@ -1,0 +1,9 @@
+[project]
+name = "energymind"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = ["numpy","pandas","scikit-learn","scipy","pyyaml","matplotlib","streamlit"]
+[tool.setuptools.packages.find]
+where = ["src"]
+[tool.pytest.ini_options]
+pythonpath = ["src"]

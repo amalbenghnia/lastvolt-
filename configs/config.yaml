@@ -1,0 +1,27 @@
+# Tous les parametres du microgrid de reference. Chaque valeur porte un STATUT de provenance.
+# statuts: measured | public_source | datasheet | estimated | simulation_assumption  (a remplacer en Phase 2)
+resolution: 15min
+seed_calibration: 11
+seed_test: 22
+periods:               # decoupage CHRONOLOGIQUE (pas de fuite temporelle)
+  train_pv_model: ["2022-02-24", "2023-03-31"]
+  calibrate_diagnosis: ["2023-04-01", "2023-10-31"]
+  test: ["2023-11-01", "2024-05-31"]
+pv:
+  pnom_kwp: {value: 50.0, status: simulation_assumption, note: "PV_dataset normalise puis remis a l'echelle; confirmer la puissance installee sur le campus"}
+  inverter_efficiency: {value: 0.97, status: datasheet}
+bess:
+  capacity_kwh: {value: 100.0, status: simulation_assumption}
+  power_kw: {value: 40.0, status: simulation_assumption}
+  eta_charge: {value: 0.95, status: datasheet}
+  eta_discharge: {value: 0.95, status: datasheet}
+  soc_min: 0.10
+  soc_max: 0.90
+network:
+  v_nominal_v: {value: 400.0, status: public_source, note: "BT triphase 400 V"}
+  loss_load_frac: {value: 0.010, status: simulation_assumption}
+  loss_pv_frac: {value: 0.005, status: simulation_assumption}
+noise:
+  power_rel: 0.005
+  power_abs_kw: 0.25
+  voltage_rel: 0.003

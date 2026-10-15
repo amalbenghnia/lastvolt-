@@ -1,0 +1,13 @@
+numpy>=1.26
+pandas>=2.1
+scikit-learn>=1.4
+scipy>=1.11
+pyyaml>=6.0
+matplotlib>=3.8
+streamlit>=1.36
+fastapi>=0.100
+uvicorn>=0.23
+pytest>=8.0
+lightgbm>=4.0
+pandapower>=3.5
+shap>=0.49

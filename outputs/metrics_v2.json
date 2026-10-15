@@ -1,0 +1,788 @@
+{
+  "n_seeds": 5,
+  "n_test_events_per_seed": 96,
+  "detection": {
+    "A_isoforest_brut": {
+      "event_recall": {
+        "mean": 0.0354,
+        "ci95_low": -0.003,
+        "ci95_high": 0.0738
+      },
+      "precision": {
+        "mean": 0.4633,
+        "ci95_low": 0.033,
+        "ci95_high": 0.8936
+      },
+      "recall": {
+        "mean": 0.0089,
+        "ci95_low": -0.0008,
+        "ci95_high": 0.0185
+      },
+      "fpr": {
+        "mean": 0.0006,
+        "ci95_low": 0.0005,
+        "ci95_high": 0.0008
+      }
+    },
+    "B_physique_seule": {
+      "event_recall": {
+        "mean": 0.4896,
+        "ci95_low": 0.4766,
+        "ci95_high": 0.5025
+      },
+      "precision": {
+        "mean": 0.9224,
+        "ci95_low": 0.9163,
+        "ci95_high": 0.9284
+      },
+      "recall": {
+        "mean": 0.3057,
+        "ci95_low": 0.2878,
+        "ci95_high": 0.3235
+      },
+      "fpr": {
+        "mean": 0.0026,
+        "ci95_low": 0.0025,
+        "ci95_high": 0.0028
+      }
+    },
+    "C_isoforest_resid": {
+      "event_recall": {
+        "mean": 0.45,
+        "ci95_low": 0.4153,
+        "ci95_high": 0.4847
+      },
+      "precision": {
+        "mean": 0.9075,
+        "ci95_low": 0.8946,
+        "ci95_high": 0.9204
+      },
+      "recall": {
+        "mean": 0.212,
+        "ci95_low": 0.196,
+        "ci95_high": 0.2281
+      },
+      "fpr": {
+        "mean": 0.0022,
+        "ci95_low": 0.0019,
+        "ci95_high": 0.0025
+      }
+    },
+    "EnergyMind": {
+      "event_recall": {
+        "mean": 0.5813,
+        "ci95_low": 0.5454,
+        "ci95_high": 0.6171
+      },
+      "precision": {
+        "mean": 0.9123,
+        "ci95_low": 0.9077,
+        "ci95_high": 0.917
+      },
+      "recall": {
+        "mean": 0.3763,
+        "ci95_low": 0.3521,
+        "ci95_high": 0.4006
+      },
+      "fpr": {
+        "mean": 0.0037,
+        "ci95_low": 0.0036,
+        "ci95_high": 0.0038
+      }
+    },
+    "CUSUM": {
+      "event_recall": {
+        "mean": 0.8396,
+        "ci95_low": 0.8098,
+        "ci95_high": 0.8694
+      },
+      "precision": {
+        "mean": 0.1208,
+        "ci95_low": 0.1119,
+        "ci95_high": 0.1297
+      },
+      "recall": {
+        "mean": 0.7727,
+        "ci95_low": 0.735,
+        "ci95_high": 0.8104
+      },
+      "fpr": {
+        "mean": 0.5777,
+        "ci95_low": 0.5282,
+        "ci95_high": 0.6272
+      }
+    }
+  },
+  "false_alarms_per_day": {
+    "mean": 0.1728,
+    "ci95_low": 0.1652,
+    "ci95_high": 0.1804
+  },
+  "diagnosis": {
+    "acc_decided": {
+      "mean": 1.0,
+      "ci95_low": 1.0,
+      "ci95_high": 1.0
+    },
+    "acc_forced": {
+      "mean": 0.8608,
+      "ci95_low": 0.8174,
+      "ci95_high": 0.9042
+    },
+    "abstention_rate": {
+      "mean": 0.5057,
+      "ci95_low": 0.4927,
+      "ci95_high": 0.5186
+    },
+    "ece_calibrated": {
+      "mean": 0.0383,
+      "ci95_low": 0.0199,
+      "ci95_high": 0.0567
+    },
+    "brier_score": {
+      "mean": 0.036,
+      "ci95_low": 0.0329,
+      "ci95_high": 0.039
+    },
+    "human_review_rate": {
+      "mean": 0.7211,
+      "ci95_low": 0.6969,
+      "ci95_high": 0.7454
+    }
+  },
+  "surrogate_validation": {
+    "n_fit": 2000,
+    "n_test": 500,
+    "grid_kw_mae": 0.09553879135389956,
+    "grid_kw_max": 0.4816182588718192,
+    "grid_kw_p95": 0.24939931458909254,
+    "valid": true,
+    "note": "Validation sur \u00e9tats ind\u00e9pendants (distribution l\u00e9g\u00e8rement hors domaine d'ajustement). Si valid=False, pandapower est utilis\u00e9 directement."
+  },
+  "config": {
+    "n_cal": 80,
+    "n_test": 96,
+    "hidden": [
+      "inv"
+    ],
+    "seeds": [
+      22,
+      33,
+      44,
+      55,
+      66
+    ],
+    "classes": [
+      "normal",
+      "pv_fault",
+      "grid_event",
+      "load_peak",
+      "pv_sensor_fault",
+      "voltage_sensor_fault",
+      "bess_sensor_fault",
+      "coordinated_falsification"
+    ],
+    "pv_model": "lgb",
+    "calibration": "IsotonicRegression (one-vs-rest)",
+    "policy": "ExpectedLoss"
+  },
+  "per_seed": [
+    {
+      "seed": 22,
+      "detection": {
+        "A_isoforest_brut": {
+          "precision": 0.6666666666666666,
+          "recall": 0.010411244143675169,
+          "fpr": 0.0005397527932207049,
+          "tp": 20,
+          "fp": 10,
+          "fn": 1901,
+          "event_recall": 0.020833333333333332,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.0,
+            "coordinated_falsification": 0.0,
+            "grid_event": 0.083,
+            "load_peak": 0.0,
+            "pv_fault": 0.0,
+            "pv_sensor_fault": 0.0,
+            "voltage_sensor_fault": 0.083
+          },
+          "median_latency_steps": 7.5
+        },
+        "B_physique_seule": {
+          "precision": 0.9241274658573596,
+          "recall": 0.3170223841749089,
+          "fpr": 0.0026987639661035247,
+          "tp": 609,
+          "fp": 50,
+          "fn": 1312,
+          "event_recall": 0.5,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.5,
+            "coordinated_falsification": 0.0,
+            "grid_event": 0.667,
+            "load_peak": 0.0,
+            "pv_fault": 0.0,
+            "pv_sensor_fault": 0.917,
+            "voltage_sensor_fault": 1.0
+          },
+          "median_latency_steps": 3.0
+        },
+        "C_isoforest_resid": {
+          "precision": 0.9144736842105263,
+          "recall": 0.2170744403956273,
+          "fpr": 0.002105035893560749,
+          "tp": 417,
+          "fp": 39,
+          "fn": 1504,
+          "event_recall": 0.4375,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.25,
+            "coordinated_falsification": 0.0,
+            "grid_event": 1.0,
+            "load_peak": 0.167,
+            "pv_fault": 0.25,
+            "pv_sensor_fault": 0.917,
+            "voltage_sensor_fault": 0.0
+          },
+          "median_latency_steps": 3.5
+        },
+        "EnergyMind": {
+          "precision": 0.9160493827160494,
+          "recall": 0.3862571577303488,
+          "fpr": 0.0036703189939007934,
+          "tp": 742,
+          "fp": 68,
+          "fn": 1179,
+          "event_recall": 0.6145833333333334,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.5,
+            "coordinated_falsification": 0.167,
+            "grid_event": 1.0,
+            "load_peak": 0.0,
+            "pv_fault": 0.417,
+            "pv_sensor_fault": 0.917,
+            "voltage_sensor_fault": 1.0
+          },
+          "median_latency_steps": 3.0
+        },
+        "CUSUM": {
+          "precision": 0.11710743801652893,
+          "recall": 0.7376366475793857,
+          "fpr": 0.5766179089976791,
+          "tp": 1417,
+          "fp": 10683,
+          "fn": 504,
+          "event_recall": 0.8020833333333334,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.833,
+            "coordinated_falsification": 0.75,
+            "grid_event": 0.583,
+            "load_peak": 0.667,
+            "pv_fault": 1.0,
+            "pv_sensor_fault": 1.0,
+            "voltage_sensor_fault": 0.583
+          },
+          "median_latency_steps": 0.0
+        }
+      },
+      "fa_per_day": 0.16901408450704225,
+      "diag": {
+        "n_detected": 59,
+        "abstention_rate": 0.4915254237288136,
+        "acc_forced": 0.8135593220338984,
+        "acc_decided": 1.0,
+        "ece_calibrated": 0.023224441256097524,
+        "brier_score": 0.035970444220558055,
+        "human_review_rate": 0.6949152542372882
+      }
+    },
+    {
+      "seed": 33,
+      "detection": {
+        "A_isoforest_brut": {
+          "precision": 0.1875,
+          "recall": 0.0016268980477223427,
+          "fpr": 0.0006987744571059987,
+          "tp": 3,
+          "fp": 13,
+          "fn": 1841,
+          "event_recall": 0.020833333333333332,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.0,
+            "coordinated_falsification": 0.0,
+            "grid_event": 0.083,
+            "load_peak": 0.0,
+            "pv_fault": 0.0,
+            "pv_sensor_fault": 0.0,
+            "voltage_sensor_fault": 0.083
+          },
+          "median_latency_steps": 6.5
+        },
+        "B_physique_seule": {
+          "precision": 0.9240710823909531,
+          "recall": 0.31019522776572667,
+          "fpr": 0.002526338421844765,
+          "tp": 572,
+          "fp": 47,
+          "fn": 1272,
+          "event_recall": 0.4791666666666667,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.333,
+            "coordinated_falsification": 0.0,
+            "grid_event": 0.833,
+            "load_peak": 0.0,
+            "pv_fault": 0.0,
+            "pv_sensor_fault": 0.833,
+            "voltage_sensor_fault": 1.0
+          },
+          "median_latency_steps": 3.0
+        },
+        "C_isoforest_resid": {
+          "precision": 0.8929384965831435,
+          "recall": 0.21258134490238612,
+          "fpr": 0.002526338421844765,
+          "tp": 392,
+          "fp": 47,
+          "fn": 1452,
+          "event_recall": 0.4375,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.083,
+            "coordinated_falsification": 0.167,
+            "grid_event": 1.0,
+            "load_peak": 0.25,
+            "pv_fault": 0.25,
+            "pv_sensor_fault": 0.875,
+            "voltage_sensor_fault": 0.0
+          },
+          "median_latency_steps": 4.0
+        },
+        "EnergyMind": {
+          "precision": 0.9132124352331606,
+          "recall": 0.3823210412147505,
+          "fpr": 0.0036013760481616855,
+          "tp": 705,
+          "fp": 67,
+          "fn": 1139,
+          "event_recall": 0.59375,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.333,
+            "coordinated_falsification": 0.25,
+            "grid_event": 1.0,
+            "load_peak": 0.0,
+            "pv_fault": 0.5,
+            "pv_sensor_fault": 0.833,
+            "voltage_sensor_fault": 1.0
+          },
+          "median_latency_steps": 3.0
+        },
+        "CUSUM": {
+          "precision": 0.11140055163959546,
+          "recall": 0.7885032537960954,
+          "fpr": 0.6234143195011825,
+          "tp": 1454,
+          "fp": 11598,
+          "fn": 390,
+          "event_recall": 0.8333333333333334,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.917,
+            "coordinated_falsification": 0.667,
+            "grid_event": 0.75,
+            "load_peak": 0.667,
+            "pv_fault": 1.0,
+            "pv_sensor_fault": 1.0,
+            "voltage_sensor_fault": 0.667
+          },
+          "median_latency_steps": 0.0
+        }
+      },
+      "fa_per_day": 0.17370892018779344,
+      "diag": {
+        "n_detected": 57,
+        "abstention_rate": 0.5087719298245614,
+        "acc_forced": 0.8771929824561403,
+        "acc_decided": 1.0,
+        "ece_calibrated": 0.03704338149313748,
+        "brier_score": 0.037190831853553014,
+        "human_review_rate": 0.7192982456140351
+      }
+    },
+    {
+      "seed": 44,
+      "detection": {
+        "A_isoforest_brut": {
+          "precision": 0.7804878048780488,
+          "recall": 0.0167276529012023,
+          "fpr": 0.0004855678446182897,
+          "tp": 32,
+          "fp": 9,
+          "fn": 1881,
+          "event_recall": 0.0625,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.0,
+            "coordinated_falsification": 0.0,
+            "grid_event": 0.333,
+            "load_peak": 0.083,
+            "pv_fault": 0.083,
+            "pv_sensor_fault": 0.0,
+            "voltage_sensor_fault": 0.0
+          },
+          "median_latency_steps": 4.5
+        },
+        "B_physique_seule": {
+          "precision": 0.928462709284627,
+          "recall": 0.31887088342916886,
+          "fpr": 0.00253574318856218,
+          "tp": 610,
+          "fp": 47,
+          "fn": 1303,
+          "event_recall": 0.4791666666666667,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.333,
+            "coordinated_falsification": 0.0,
+            "grid_event": 0.833,
+            "load_peak": 0.0,
+            "pv_fault": 0.0,
+            "pv_sensor_fault": 0.833,
+            "voltage_sensor_fault": 1.0
+          },
+          "median_latency_steps": 3.0
+        },
+        "C_isoforest_resid": {
+          "precision": 0.9182389937106918,
+          "recall": 0.22895974908520647,
+          "fpr": 0.0021041273266792556,
+          "tp": 438,
+          "fp": 39,
+          "fn": 1475,
+          "event_recall": 0.5,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.25,
+            "coordinated_falsification": 0.25,
+            "grid_event": 1.0,
+            "load_peak": 0.417,
+            "pv_fault": 0.417,
+            "pv_sensor_fault": 0.833,
+            "voltage_sensor_fault": 0.0
+          },
+          "median_latency_steps": 3.0
+        },
+        "EnergyMind": {
+          "precision": 0.9143920595533499,
+          "recall": 0.3852587558808155,
+          "fpr": 0.0037226868087402213,
+          "tp": 737,
+          "fp": 69,
+          "fn": 1176,
+          "event_recall": 0.5625,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.333,
+            "coordinated_falsification": 0.083,
+            "grid_event": 1.0,
+            "load_peak": 0.0,
+            "pv_fault": 0.417,
+            "pv_sensor_fault": 0.833,
+            "voltage_sensor_fault": 1.0
+          },
+          "median_latency_steps": 3.0
+        },
+        "CUSUM": {
+          "precision": 0.1236171639289306,
+          "recall": 0.7710402509147936,
+          "fpr": 0.5641758834637173,
+          "tp": 1475,
+          "fp": 10457,
+          "fn": 438,
+          "event_recall": 0.84375,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.917,
+            "coordinated_falsification": 0.75,
+            "grid_event": 0.583,
+            "load_peak": 0.75,
+            "pv_fault": 1.0,
+            "pv_sensor_fault": 1.0,
+            "voltage_sensor_fault": 0.75
+          },
+          "median_latency_steps": 0.0
+        }
+      },
+      "fa_per_day": 0.1784037558685446,
+      "diag": {
+        "n_detected": 54,
+        "abstention_rate": 0.5,
+        "acc_forced": 0.9074074074074074,
+        "acc_decided": 1.0,
+        "ece_calibrated": 0.024467838638935903,
+        "brier_score": 0.03311798830533262,
+        "human_review_rate": 0.7222222222222222
+      }
+    },
+    {
+      "seed": 55,
+      "detection": {
+        "A_isoforest_brut": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "fpr": 0.0005930558550787146,
+          "tp": 0,
+          "fp": 11,
+          "fn": 1900,
+          "event_recall": 0.0,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.0,
+            "coordinated_falsification": 0.0,
+            "grid_event": 0.0,
+            "load_peak": 0.0,
+            "pv_fault": 0.0,
+            "pv_sensor_fault": 0.0,
+            "voltage_sensor_fault": 0.0
+          },
+          "median_latency_steps": null
+        },
+        "B_physique_seule": {
+          "precision": 0.9157212317666127,
+          "recall": 0.29736842105263156,
+          "fpr": 0.0028035367694630147,
+          "tp": 565,
+          "fp": 52,
+          "fn": 1335,
+          "event_recall": 0.5,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.417,
+            "coordinated_falsification": 0.0,
+            "grid_event": 0.75,
+            "load_peak": 0.0,
+            "pv_fault": 0.0,
+            "pv_sensor_fault": 0.917,
+            "voltage_sensor_fault": 1.0
+          },
+          "median_latency_steps": 3.0
+        },
+        "C_isoforest_resid": {
+          "precision": 0.9108910891089109,
+          "recall": 0.1936842105263158,
+          "fpr": 0.0019409100711667026,
+          "tp": 368,
+          "fp": 36,
+          "fn": 1532,
+          "event_recall": 0.4375,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.0,
+            "coordinated_falsification": 0.167,
+            "grid_event": 1.0,
+            "load_peak": 0.25,
+            "pv_fault": 0.417,
+            "pv_sensor_fault": 0.833,
+            "voltage_sensor_fault": 0.0
+          },
+          "median_latency_steps": 4.0
+        },
+        "EnergyMind": {
+          "precision": 0.9118012422360249,
+          "recall": 0.3863157894736842,
+          "fpr": 0.0038279059736898856,
+          "tp": 734,
+          "fp": 71,
+          "fn": 1166,
+          "event_recall": 0.59375,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.417,
+            "coordinated_falsification": 0.0,
+            "grid_event": 1.0,
+            "load_peak": 0.0,
+            "pv_fault": 0.5,
+            "pv_sensor_fault": 0.917,
+            "voltage_sensor_fault": 1.0
+          },
+          "median_latency_steps": 3.0
+        },
+        "CUSUM": {
+          "precision": 0.12130710759344879,
+          "recall": 0.8147368421052632,
+          "fpr": 0.6045395729997843,
+          "tp": 1548,
+          "fp": 11213,
+          "fn": 352,
+          "event_recall": 0.8541666666666666,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 1.0,
+            "coordinated_falsification": 0.667,
+            "grid_event": 0.833,
+            "load_peak": 0.667,
+            "pv_fault": 1.0,
+            "pv_sensor_fault": 1.0,
+            "voltage_sensor_fault": 0.667
+          },
+          "median_latency_steps": 0.0
+        }
+      },
+      "fa_per_day": 0.1784037558685446,
+      "diag": {
+        "n_detected": 57,
+        "abstention_rate": 0.5087719298245614,
+        "acc_forced": 0.8596491228070176,
+        "acc_decided": 1.0,
+        "ece_calibrated": 0.055381818281991416,
+        "brier_score": 0.03939894804142147,
+        "human_review_rate": 0.7192982456140351
+      }
+    },
+    {
+      "seed": 66,
+      "detection": {
+        "A_isoforest_brut": {
+          "precision": 0.6818181818181818,
+          "recall": 0.015592515592515593,
+          "fpr": 0.0007557762902180954,
+          "tp": 30,
+          "fp": 14,
+          "fn": 1894,
+          "event_recall": 0.07291666666666667,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.0,
+            "coordinated_falsification": 0.0,
+            "grid_event": 0.417,
+            "load_peak": 0.0,
+            "pv_fault": 0.0,
+            "pv_sensor_fault": 0.0,
+            "voltage_sensor_fault": 0.167
+          },
+          "median_latency_steps": 6.0
+        },
+        "B_physique_seule": {
+          "precision": 0.9194630872483222,
+          "recall": 0.28482328482328484,
+          "fpr": 0.0025912329950334703,
+          "tp": 548,
+          "fp": 48,
+          "fn": 1376,
+          "event_recall": 0.4895833333333333,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.417,
+            "coordinated_falsification": 0.0,
+            "grid_event": 0.917,
+            "load_peak": 0.0,
+            "pv_fault": 0.0,
+            "pv_sensor_fault": 0.792,
+            "voltage_sensor_fault": 1.0
+          },
+          "median_latency_steps": 3.0
+        },
+        "C_isoforest_resid": {
+          "precision": 0.9009009009009009,
+          "recall": 0.2079002079002079,
+          "fpr": 0.0023752969121140144,
+          "tp": 400,
+          "fp": 44,
+          "fn": 1524,
+          "event_recall": 0.4375,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.25,
+            "coordinated_falsification": 0.0,
+            "grid_event": 1.0,
+            "load_peak": 0.333,
+            "pv_fault": 0.333,
+            "pv_sensor_fault": 0.708,
+            "voltage_sensor_fault": 0.167
+          },
+          "median_latency_steps": 3.5
+        },
+        "EnergyMind": {
+          "precision": 0.9062068965517242,
+          "recall": 0.3414760914760915,
+          "fpr": 0.0036709134096307495,
+          "tp": 657,
+          "fp": 68,
+          "fn": 1267,
+          "event_recall": 0.5416666666666666,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 0.417,
+            "coordinated_falsification": 0.0,
+            "grid_event": 1.0,
+            "load_peak": 0.0,
+            "pv_fault": 0.333,
+            "pv_sensor_fault": 0.792,
+            "voltage_sensor_fault": 1.0
+          },
+          "median_latency_steps": 3.0
+        },
+        "CUSUM": {
+          "precision": 0.13059971098265896,
+          "recall": 0.7515592515592515,
+          "fpr": 0.5196501835456705,
+          "tp": 1446,
+          "fp": 9626,
+          "fn": 478,
+          "event_recall": 0.8645833333333334,
+          "event_recall_by_class": {
+            "bess_sensor_fault": 1.0,
+            "coordinated_falsification": 0.833,
+            "grid_event": 0.75,
+            "load_peak": 0.75,
+            "pv_fault": 1.0,
+            "pv_sensor_fault": 1.0,
+            "voltage_sensor_fault": 0.583
+          },
+          "median_latency_steps": 0.0
+        }
+      },
+      "fa_per_day": 0.1643192488262911,
+      "diag": {
+        "n_detected": 52,
+        "abstention_rate": 0.5192307692307692,
+        "acc_forced": 0.8461538461538461,
+        "acc_decided": 1.0,
+        "ece_calibrated": 0.05130443821535887,
+        "brier_score": 0.03431363483827393,
+        "human_review_rate": 0.75
+      }
+    }
+  ],
+  "goal4_transfer": {
+    "n_signatures_exported": 7,
+    "n_imported": 4,
+    "n_rejected": 3,
+    "details": [
+      [
+        "pv_fault",
+        "importe",
+        "poids 0.3, \u03b5=1.0"
+      ],
+      [
+        "grid_event",
+        "rejete",
+        "capteurs absents: ['vinv']"
+      ],
+      [
+        "load_peak",
+        "importe",
+        "poids 0.3, \u03b5=1.0"
+      ],
+      [
+        "pv_sensor_fault",
+        "rejete",
+        "capteurs absents: ['inv']"
+      ],
+      [
+        "voltage_sensor_fault",
+        "importe",
+        "poids 0.3, \u03b5=1.0"
+      ],
+      [
+        "bess_sensor_fault",
+        "importe",
+        "poids 0.3, \u03b5=1.0"
+      ],
+      [
+        "coordinated_falsification",
+        "rejete",
+        "capteurs absents: ['inv']"
+      ]
+    ],
+    "factory_available_sensors": [
+      "bal",
+      "pvexp",
+      "vpcc"
+    ]
+  }
+}
