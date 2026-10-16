@@ -2,263 +2,221 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
-import numpy as np
+from matplotlib.patches import FancyBboxPatch
 
-LAYER_COLORS = {
-    "physical":   "#FEF3C7",  # amber-50
-    "sensor":     "#DBEAFE",  # blue-100
-    "ai":         "#D1FAE5",  # green-100
-    "governance": "#FEE2E2",  # red-100
-    "noosphere":  "#EDE9FE",  # violet-100
-}
-BORDER_COLORS = {
-    "physical":   "#D97706",
-    "sensor":     "#2563EB",
-    "ai":         "#059669",
-    "governance": "#DC2626",
-    "noosphere":  "#7C3AED",
-}
-NODE_COLORS = {
-    "physical":   "#FCD34D",
-    "sensor":     "#93C5FD",
-    "ai":         "#6EE7B7",
-    "governance": "#FCA5A5",
-    "noosphere":  "#C4B5FD",
-}
+LAYER_THEMES = [
+    {
+        "name": "LAYER 1: PHYSICAL MICROGRID & DIGITAL TWIN (pandapower 7-Bus Model)",
+        "band_bg": "#FFFBEB", "band_edge": "#F59E0B",
+        "node_bg": "#FEF3C7", "node_edge": "#D97706",
+        "accent": "#B45309",
+    },
+    {
+        "name": "LAYER 2: SENSORS & SCADA TELEMETRY (15-min / 5-min Multi-Stream Acquisition)",
+        "band_bg": "#EFF6FF", "band_edge": "#3B82F6",
+        "node_bg": "#DBEAFE", "node_edge": "#2563EB",
+        "accent": "#1D4ED8",
+    },
+    {
+        "name": "LAYER 3: ENERGYMIND AI TRUST LAYER (Physics Residuals, Hybrid Gate & Isotonic Calibration)",
+        "band_bg": "#ECFDF5", "band_edge": "#10B981",
+        "node_bg": "#D1FAE5", "node_edge": "#059669",
+        "accent": "#047857",
+    },
+    {
+        "name": "LAYER 4: GOVERNANCE, RISK POLICY & AUDIT (Expected Loss, SHAP & Tamper-Evident Ledger)",
+        "band_bg": "#FEF2F2", "band_edge": "#EF4444",
+        "node_bg": "#FEE2E2", "node_edge": "#DC2626",
+        "accent": "#B91C1C",
+    },
+    {
+        "name": "LAYER 5: NOOSPHERE FEDERATED COLLECTIVE DEFENSE (Multi-Node ε-DP Privacy-Preserving Sharing)",
+        "band_bg": "#F5F3FF", "band_edge": "#8B5CF6",
+        "node_bg": "#EDE9FE", "node_edge": "#7C3AED",
+        "accent": "#6D28D9",
+    },
+]
 
-
-def rounded_box(ax, x, y, w, h, fc, ec, lw=1.2, radius=0.06, zorder=3):
-    box = FancyBboxPatch(
-        (x - w / 2, y - h / 2), w, h,
-        boxstyle=f"round,pad={radius}",
-        facecolor=fc, edgecolor=ec, linewidth=lw, zorder=zorder,
-        clip_on=False
-    )
-    ax.add_patch(box)
-    return box
-
-
-def layer_band(ax, y_bottom, y_top, color, border, label, label_color):
-    band = FancyBboxPatch(
-        (0, y_bottom), 1, y_top - y_bottom,
-        boxstyle="round,pad=0.005",
-        facecolor=color, edgecolor=border, linewidth=1.4, alpha=0.55,
-        transform=ax.transAxes, zorder=1, clip_on=False
-    )
-    ax.add_patch(band)
-    ax.text(0.005, (y_bottom + y_top) / 2, label,
-            transform=ax.transAxes, fontsize=7, fontweight="bold",
-            color=label_color, rotation=90, va="center", ha="center",
-            zorder=5)
-
-
-def node(ax, cx, cy, w, h, fc, ec, title, subtitle, title_fs=7.5, sub_fs=6.2):
-    rounded_box(ax, cx, cy, w, h, fc=fc, ec=ec, lw=1.4)
-    ax.text(cx, cy + h * 0.12, title, ha="center", va="center",
-            fontsize=title_fs, fontweight="bold", color="#1E293B", zorder=6,
-            wrap=True, multialignment="center")
-    ax.text(cx, cy - h * 0.22, subtitle, ha="center", va="center",
-            fontsize=sub_fs, color="#475569", zorder=6,
-            multialignment="center", linespacing=1.35)
-
-
-def arrow_v(ax, x, y1, y2, color, lw=2.0, label="", label_side="right"):
-    ax.annotate(
-        "", xy=(x, y2), xytext=(x, y1),
-        arrowprops=dict(arrowstyle="-|>", color=color, lw=lw,
-                        mutation_scale=14),
-        zorder=4
-    )
-    if label:
-        lx = x + 0.14 if label_side == "right" else x - 0.14
-        ly = (y1 + y2) / 2
-        ax.text(lx, ly, label, fontsize=5.8, color=color,
-                ha="left" if label_side == "right" else "right",
-                va="center", zorder=5)
-
-
-def arrow_h(ax, x1, x2, y, color, lw=1.4):
-    ax.annotate(
-        "", xy=(x2, y), xytext=(x1, y),
-        arrowprops=dict(arrowstyle="-|>", color=color, lw=lw,
-                        mutation_scale=12),
-        zorder=4
-    )
-
-
-fig, ax = plt.subplots(figsize=(13, 11))
-ax.set_xlim(0, 13)
-ax.set_ylim(-0.2, 11.2)
+fig, ax = plt.subplots(figsize=(15, 13))
+ax.set_xlim(0, 15)
+ax.set_ylim(-0.3, 13.0)
 ax.axis("off")
-
 fig.patch.set_facecolor("white")
 
-BAND_Y = [0.0, 1.8, 3.8, 6.2, 8.5, 11.0]
-
-LABELS = [
-    ("Layer 1: Physical Microgrid — pandapower 7-Bus Digital Twin",
-     LAYER_COLORS["physical"], BORDER_COLORS["physical"]),
-    ("Layer 2: Sensor & SCADA Telemetry Acquisition",
-     LAYER_COLORS["sensor"], BORDER_COLORS["sensor"]),
-    ("Layer 3: EnergyMind AI Trust Layer",
-     LAYER_COLORS["ai"], BORDER_COLORS["ai"]),
-    ("Layer 4: Governance, Risk Policy & Audit Ledger",
-     LAYER_COLORS["governance"], BORDER_COLORS["governance"]),
-    ("Layer 5: Noosphere — Multi-Node Federated Defense",
-     LAYER_COLORS["noosphere"], BORDER_COLORS["noosphere"]),
+# Define vertical bands (y-bottom, y-top)
+BANDS = [
+    (0.2, 2.3),    # Layer 1
+    (2.6, 4.7),    # Layer 2
+    (5.0, 7.3),    # Layer 3
+    (7.6, 9.8),    # Layer 4
+    (10.1, 12.3),  # Layer 5
 ]
 
-for i, (lbl, lc, bc) in enumerate(LABELS):
-    yb = BAND_Y[i]
-    yt = BAND_Y[i + 1]
-    rect = FancyBboxPatch(
-        (0.25, yb + 0.08), 12.5, yt - yb - 0.16,
-        boxstyle="round,pad=0.1",
-        facecolor=lc, edgecolor=bc, linewidth=1.5,
-        alpha=0.5, zorder=1
+def draw_node(ax, cx, cy, w, h, bg, edge, title, subtitle, title_fs=8.2, sub_fs=6.8):
+    box = FancyBboxPatch(
+        (cx - w / 2, cy - h / 2), w, h,
+        boxstyle="round,pad=0.06",
+        facecolor=bg, edgecolor=edge, linewidth=1.3, zorder=3
     )
-    ax.add_patch(rect)
-    ax.text(0.62, (yb + yt) / 2, lbl, fontsize=7.2, fontweight="bold",
-            color=bc, rotation=90, va="center", ha="center", zorder=5)
+    ax.add_patch(box)
+    ax.text(cx, cy + h * 0.16, title, ha="center", va="center",
+            fontsize=title_fs, fontweight="bold", color="#0F172A", zorder=4)
+    ax.text(cx, cy - h * 0.20, subtitle, ha="center", va="center",
+            fontsize=sub_fs, color="#334155", zorder=4, linespacing=1.3)
 
-NW, NH = 2.5, 1.0
-CY = [(BAND_Y[i] + BAND_Y[i + 1]) / 2 for i in range(5)]
-XS = [2.2, 4.95, 7.7, 10.5]
+def arrow_h(ax, x1, x2, y, color, lw=1.5, label=""):
+    ax.annotate(
+        "", xy=(x2, y), xytext=(x1, y),
+        arrowprops=dict(arrowstyle="-|>", color=color, lw=lw, mutation_scale=13),
+        zorder=5
+    )
+    if label:
+        ax.text((x1 + x2) / 2, y + 0.18, label, fontsize=6.5, color=color,
+                ha="center", va="bottom", fontweight="bold", zorder=6)
 
-PHY = [
-    ("STEG Grid PCC", "20 kV Slack Bus\n(Bus 0)"),
-    ("Dyn11 Transformer", "250 kVA, 20/0.4 kV\n$u_k = 4\\%$"),
-    ("Main LV Busbar", "400 V, 3-Phase\n(Bus 1 — 7-bus)"),
-    ("DERs & Campus\nLoads", "50 kWp PV · 100 kWh BESS\n3 Feeders (Admin/Labs/Res.)"),
+def arrow_v(ax, x, y1, y2, color, lw=1.8, label="", label_side="right"):
+    ax.annotate(
+        "", xy=(x, y2), xytext=(x, y1),
+        arrowprops=dict(arrowstyle="-|>", color=color, lw=lw, mutation_scale=14),
+        zorder=5
+    )
+    if label:
+        lx = x + 0.15 if label_side == "right" else x - 0.15
+        ha = "left" if label_side == "right" else "right"
+        ax.text(lx, (y1 + y2) / 2, label, fontsize=6.8, color=color,
+                ha=ha, va="center", fontweight="bold", zorder=6)
+
+# Draw bands & headers
+for i, (yb, yt) in enumerate(BANDS):
+    theme = LAYER_THEMES[i]
+    band = FancyBboxPatch(
+        (0.3, yb), 14.4, yt - yb,
+        boxstyle="round,pad=0.08",
+        facecolor=theme["band_bg"], edgecolor=theme["band_edge"],
+        linewidth=1.4, zorder=1
+    )
+    ax.add_patch(band)
+    ax.text(0.6, yt - 0.23, theme["name"], fontsize=8.8, fontweight="bold",
+            color=theme["accent"], ha="left", va="top", zorder=2)
+
+# --- LAYER 1: PHYSICAL MICROGRID ---
+L1_Y = 1.05
+L1_W, L1_H = 2.7, 1.05
+L1_X = [2.0, 5.6, 9.2, 12.8]
+L1_NODES = [
+    ("STEG Grid PCC", "20 kV MV Slack Bus (Bus 0)\nGrid Connection & PCC"),
+    ("Dyn11 Transformer", "250 kVA, 20/0.4 kV\nDyn11 Step-Down, uk=4%"),
+    ("Main LV Busbar", "400 V Line-to-Line (Bus 1)\n3-Phase Radial Backbone"),
+    ("DERs & Campus Load", "50 kWp PV · 100 kWh BESS\n3 Feeders (Admin/Labs/Res)"),
 ]
-for i, (t, s) in enumerate(PHY):
-    node(ax, XS[i], CY[0], NW, NH,
-         fc=NODE_COLORS["physical"], ec=BORDER_COLORS["physical"],
-         title=t, subtitle=s)
-for i in range(3):
-    arrow_h(ax, XS[i] + NW / 2, XS[i + 1] - NW / 2, CY[0],
-            BORDER_COLORS["physical"])
+for j, (t, s) in enumerate(L1_NODES):
+    draw_node(ax, L1_X[j], L1_Y, L1_W, L1_H,
+              LAYER_THEMES[0]["node_bg"], LAYER_THEMES[0]["node_edge"], t, s)
+for j in range(3):
+    arrow_h(ax, L1_X[j] + L1_W / 2 + 0.05, L1_X[j+1] - L1_W / 2 - 0.05, L1_Y,
+            LAYER_THEMES[0]["accent"], lw=1.6)
 
-SEN = [
-    ("Weather Telemetry", "GHI, $T_{amb}$,\n$T_{cell}$, Wind"),
-    ("PCC Metering", "$V_{pcc}$ ($V_1$),\n$P_{grid}$"),
-    ("PV Inverter Sensors", "$P_{pv}$, $V_{inv}$ ($V_2$),\n$P_{dc}$"),
-    ("BESS & Load Meters", "$P_{bess}$, SoC%,\n$P_{load,1..3}$"),
+# --- LAYER 2: SENSORS & SCADA ---
+L2_Y = 3.45
+L2_W, L2_H = 2.7, 1.05
+L2_X = [2.0, 5.6, 9.2, 12.8]
+L2_NODES = [
+    ("Weather Station", "GHI, Tamb, Tcell, Wind\n15-min Ambient Telemetry"),
+    ("PCC Metering (V1)", "Vpcc voltage & Pgrid meter\n15-min / 5-min SCADA"),
+    ("PV Inverter Sensors", "Ppv, Vinv (V2), Pdc\nDedicated Inverter Channel"),
+    ("BESS & Feeders", "Pbess, SoC%, Smart Meters\nPload across 3 branches"),
 ]
-for i, (t, s) in enumerate(SEN):
-    node(ax, XS[i], CY[1], NW, NH,
-         fc=NODE_COLORS["sensor"], ec=BORDER_COLORS["sensor"],
-         title=t, subtitle=s)
-for xi in [XS[0], XS[1], XS[2], XS[3]]:
-    arrow_v(ax, xi, BAND_Y[1] - 0.04, BAND_Y[1] + 0.12,
-            BORDER_COLORS["sensor"], lw=1.4)
+for j, (t, s) in enumerate(L2_NODES):
+    draw_node(ax, L2_X[j], L2_Y, L2_W, L2_H,
+              LAYER_THEMES[1]["node_bg"], LAYER_THEMES[1]["node_edge"], t, s)
+    arrow_v(ax, L1_X[j], L1_Y + L1_H / 2 + 0.05, L2_Y - L2_H / 2 - 0.05,
+            LAYER_THEMES[1]["accent"], lw=1.2)
 
-AI_XS = [2.2, 5.4, 8.6]
-AI_NW = 3.3
-AI_NH = 1.5
-AI = [
-    ("Physics Residual Engine",
-     "$\\mathbf{Z} \\in \\mathbb{R}^5$: balance, PV-exp,\nvoltage, inverter, volt-drop\nLightGBM weather→power"),
-    ("Hybrid Anomaly Gate",
-     "Physics Plausibility Check\n$\\wedge$ (IsoForest $\\vee$ CUSUM)\nAlert Trigger $\\mathcal{A}(t) \\in \\{0,1\\}$"),
-    ("Bayesian Diagnoser & UQ",
-     "8-Class Gaussian NB\nIsotonic Calibration: ECE = 0.038\nActive Evidence Acquisition"),
+# --- LAYER 3: ENERGYMIND AI TRUST LAYER ---
+L3_Y = 5.95
+L3_W, L3_H = 3.6, 1.25
+L3_X = [2.6, 7.5, 12.4]
+L3_NODES = [
+    ("Physics Residual Engine", "Z in R^5: [bal, pvexp, vpcc, inv, vinv]\nLightGBM Surrogate (MAE=0.096 kW)"),
+    ("Hybrid Anomaly Gate", "Physics Plausibility Residuals\nAND (Isolation Forest OR Dual CUSUM)"),
+    ("Bayesian Diagnoser & UQ", "8-Class Gaussian Naive Bayes\nIsotonic Calibration (ECE=0.038)\nActive Evidence Acquisition"),
 ]
-for i, (t, s) in enumerate(AI):
-    node(ax, AI_XS[i], CY[2], AI_NW, AI_NH,
-         fc=NODE_COLORS["ai"], ec=BORDER_COLORS["ai"],
-         title=t, subtitle=s, title_fs=7.8, sub_fs=6.0)
-for i in range(2):
-    arrow_h(ax, AI_XS[i] + AI_NW / 2, AI_XS[i + 1] - AI_NW / 2, CY[2],
-            BORDER_COLORS["ai"])
+for j, (t, s) in enumerate(L3_NODES):
+    draw_node(ax, L3_X[j], L3_Y, L3_W, L3_H,
+              LAYER_THEMES[2]["node_bg"], LAYER_THEMES[2]["node_edge"], t, s)
 
-ax.text(AI_XS[0] + AI_NW / 2 + 0.5, CY[2] + 0.15, "$\\mathbf{Z}$ scores",
-        fontsize=5.8, color=BORDER_COLORS["ai"], ha="center")
-ax.text(AI_XS[1] + AI_NW / 2 + 0.4, CY[2] + 0.15, "Alert $\\mathcal{A}$",
-        fontsize=5.8, color=BORDER_COLORS["ai"], ha="center")
+arrow_h(ax, L3_X[0] + L3_W / 2 + 0.05, L3_X[1] - L3_W / 2 - 0.05, L3_Y,
+        LAYER_THEMES[2]["accent"], lw=1.8, label="Z Scores")
+arrow_h(ax, L3_X[1] + L3_W / 2 + 0.05, L3_X[2] - L3_W / 2 - 0.05, L3_Y,
+        LAYER_THEMES[2]["accent"], lw=1.8, label="Alert Trigger")
 
-arrow_v(ax, 6.5, BAND_Y[2] - 0.04, BAND_Y[2] + 0.12,
-        BORDER_COLORS["sensor"], lw=2.0, label="Calibrated telemetry stream")
+# Upward flow from Layer 2 to Layer 3
+arrow_v(ax, 7.5, 4.7, 5.0, LAYER_THEMES[1]["accent"], lw=2.2,
+        label="Synchronized Multi-Sensor Telemetry Stream", label_side="right")
 
-GOV_XS = [2.2, 5.4, 8.6]
-GOV_NW = 3.3
-GOV_NH = 1.3
-GOV = [
-    ("Expected-Loss Policy",
-     "Asymmetric cost matrix $\\mathcal{L}(a,c)$\n4 Actions: Monitor, Alert,\nQuarantine, Escalate"),
-    ("Explainability & Audit",
-     "SHAP local attribution\nSHA-256 hash-chained\nSQLite tamper-evident ledger"),
-    ("Human Operator Console",
-     "Mandatory override on\nPhysical/Cyber alerts\n72.1% escalation rate"),
+# --- LAYER 4: GOVERNANCE, RISK POLICY & AUDIT ---
+L4_Y = 8.50
+L4_W, L4_H = 3.6, 1.20
+L4_X = [2.6, 7.5, 12.4]
+L4_NODES = [
+    ("Expected-Loss Risk Policy", "Asymmetric Cost Matrix L(a, c)\n4 Actions: Alert, Monitor, Quarantine, Escalate"),
+    ("Explainability & Audit Ledger", "SHAP Local Feature Attribution\nSHA-256 Hash-Chained SQLite Ledger"),
+    ("Human Operator Sign-Off", "Mandatory Review on Uncertain Events\n100% Accuracy on Decided (50.6% Abstention)"),
 ]
-for i, (t, s) in enumerate(GOV):
-    node(ax, GOV_XS[i], CY[3], GOV_NW, GOV_NH,
-         fc=NODE_COLORS["governance"], ec=BORDER_COLORS["governance"],
-         title=t, subtitle=s, title_fs=7.8, sub_fs=6.0)
-for i in range(2):
-    arrow_h(ax, GOV_XS[i] + GOV_NW / 2, GOV_XS[i + 1] - GOV_NW / 2, CY[3],
-            BORDER_COLORS["governance"])
+for j, (t, s) in enumerate(L4_NODES):
+    draw_node(ax, L4_X[j], L4_Y, L4_W, L4_H,
+              LAYER_THEMES[3]["node_bg"], LAYER_THEMES[3]["node_edge"], t, s)
 
-arrow_v(ax, 6.5, BAND_Y[3] - 0.04, BAND_Y[3] + 0.12,
-        BORDER_COLORS["ai"], lw=2.0,
-        label="Calibrated posteriors $P^*(c|\\mathbf{Z})$")
+arrow_h(ax, L4_X[0] + L4_W / 2 + 0.05, L4_X[1] - L4_W / 2 - 0.05, L4_Y,
+        LAYER_THEMES[3]["accent"], lw=1.8, label="Audit Trail")
+arrow_h(ax, L4_X[1] + L4_W / 2 + 0.05, L4_X[2] - L4_W / 2 - 0.05, L4_Y,
+        LAYER_THEMES[3]["accent"], lw=1.8, label="Escalation")
 
-NOO_XS = [2.2, 5.6, 9.2]
-NOO_NW = 3.0
-NOO_NH = 1.4
-NOO = [
-    ("Campus Microgrid\n(Source Node)",
-     "$\\varepsilon$-DP Export ($\\varepsilon$=1.0, $k{\\geq}5$)\nThis study — 7 signatures\nPydantic v2.0 packets"),
-    ("Federated Peer Nodes",
-     "Factory · Hospital\nSmart Building · Rural MG\nDomain shift: PSI $\\leq$ 0.25"),
-    ("Global Threat Registry",
-     "Federated consensus\nk-anonymity $\\geq$ 5\nMulti-operator defense"),
+# Upward flow from Layer 3 to Layer 4
+arrow_v(ax, 7.5, 7.3, 7.6, LAYER_THEMES[2]["accent"], lw=2.2,
+        label="Calibrated Posteriors P*(c|Z) & Decision Actions", label_side="right")
+
+# --- LAYER 5: NOOSPHERE FEDERATED COLLECTIVE DEFENSE ---
+L5_Y = 11.00
+L5_W, L5_H = 3.6, 1.20
+L5_X = [2.6, 7.5, 12.4]
+L5_NODES = [
+    ("Campus Microgrid (Source Node)", "epsilon-DP Export (epsilon=1.0, k >= 5)\n7 Signatures Exported · Pydantic v2.0"),
+    ("Federated Peer Nodes", "Multi-Node: Factory · Hospital · Smart Bldg · Rural\nDomain Shift Validation (PSI <= 0.25)"),
+    ("Global Threat Registry", "Federated Consensus Defense\nk-Anonymity >= 5 Privacy Guarantee"),
 ]
-for i, (t, s) in enumerate(NOO):
-    node(ax, NOO_XS[i], CY[4], NOO_NW, NOO_NH,
-         fc=NODE_COLORS["noosphere"], ec=BORDER_COLORS["noosphere"],
-         title=t, subtitle=s, title_fs=7.5, sub_fs=6.0)
-for i in range(2):
-    arrow_h(ax, NOO_XS[i] + NOO_NW / 2, NOO_XS[i + 1] - NOO_NW / 2, CY[4],
-            BORDER_COLORS["noosphere"], lw=1.6)
+for j, (t, s) in enumerate(L5_NODES):
+    draw_node(ax, L5_X[j], L5_Y, L5_W, L5_H,
+              LAYER_THEMES[4]["node_bg"], LAYER_THEMES[4]["node_edge"], t, s)
 
-ax.text((NOO_XS[0] + NOO_XS[1]) / 2 + 0.0, CY[4] + 0.85,
-        "$\\varepsilon$-DP signatures",
-        fontsize=6, color=BORDER_COLORS["noosphere"], ha="center")
-ax.text((NOO_XS[1] + NOO_XS[2]) / 2 + 0.0, CY[4] + 0.85,
-        "Consensus update",
-        fontsize=6, color=BORDER_COLORS["noosphere"], ha="center")
+arrow_h(ax, L5_X[0] + L5_W / 2 + 0.05, L5_X[1] - L5_W / 2 - 0.05, L5_Y,
+        LAYER_THEMES[4]["accent"], lw=1.8, label="epsilon-DP Export")
+arrow_h(ax, L5_X[1] + L5_W / 2 + 0.05, L5_X[2] - L5_W / 2 - 0.05, L5_Y,
+        LAYER_THEMES[4]["accent"], lw=1.8, label="Federated Update")
 
-arrow_v(ax, NOO_XS[0], BAND_Y[4] - 0.04, BAND_Y[4] + 0.12,
-        BORDER_COLORS["noosphere"], lw=1.8,
-        label="Anonymised signatures")
+# Upward flow from Layer 4 to Layer 5
+arrow_v(ax, 2.6, 9.8, 10.1, LAYER_THEMES[4]["accent"], lw=2.2,
+        label="Anonymized Anomaly Signatures", label_side="right")
 
-legend_elements = [
-    mpatches.Patch(facecolor=NODE_COLORS["physical"], edgecolor=BORDER_COLORS["physical"],
-                   label="Power flow (amber)"),
-    mpatches.Patch(facecolor=NODE_COLORS["sensor"], edgecolor=BORDER_COLORS["sensor"],
-                   label="Sensor telemetry (blue)"),
-    mpatches.Patch(facecolor=NODE_COLORS["ai"], edgecolor=BORDER_COLORS["ai"],
-                   label="AI processing (green)"),
-    mpatches.Patch(facecolor=NODE_COLORS["governance"], edgecolor=BORDER_COLORS["governance"],
-                   label="Governance & audit (red)"),
-    mpatches.Patch(facecolor=NODE_COLORS["noosphere"], edgecolor=BORDER_COLORS["noosphere"],
-                   label="Federated network (violet)"),
+# Overall title
+ax.text(7.5, 12.70, "Figure 3 — EnergyMind Global System Architecture",
+        fontsize=13, fontweight="bold", color="#0F172A", ha="center", va="center")
+ax.text(7.5, 12.46, "Five-Layer Cyber-Physical AI Trust Stack · University Campus Microgrid",
+        fontsize=9.5, color="#475569", ha="center", va="center")
+
+# Bottom Legend
+leg_items = [
+    mpatches.Patch(facecolor="#FEF3C7", edgecolor="#D97706", label="Physical Microgrid & Twin"),
+    mpatches.Patch(facecolor="#DBEAFE", edgecolor="#2563EB", label="Telemetry & SCADA Acquisition"),
+    mpatches.Patch(facecolor="#D1FAE5", edgecolor="#059669", label="AI Trust Layer & UQ"),
+    mpatches.Patch(facecolor="#FEE2E2", edgecolor="#DC2626", label="Governance, Risk & Audit"),
+    mpatches.Patch(facecolor="#EDE9FE", edgecolor="#7C3AED", label="Noosphere Federated Defense"),
 ]
-ax.legend(handles=legend_elements, loc="lower right", fontsize=6.5,
-          framealpha=0.9, edgecolor="#CBD5E1", ncol=1)
+ax.legend(handles=leg_items, loc="lower center", bbox_to_anchor=(0.5, -0.02),
+          ncol=5, fontsize=7.2, frameon=True, facecolor="white", edgecolor="#CBD5E1")
 
-ax.set_title(
-    "Figure 3 — EnergyMind Global System Architecture\n"
-    "Five-Layer Cyber-Physical AI Trust Stack · Campus Microgrid",
-    fontsize=11, fontweight="bold", color="#1E293B", pad=10
-)
-
-plt.tight_layout(rect=[0.05, 0, 1, 1])
-import os
-out = "outputs/fig03_architecture.png"
-os.makedirs("outputs", exist_ok=True)
-plt.savefig(out, dpi=220, bbox_inches="tight", facecolor="white")
+plt.tight_layout()
+out_path = "outputs/fig03_architecture.png"
+plt.savefig(out_path, dpi=220, bbox_inches="tight", facecolor="white")
 plt.close()
-print(f"Saved: {out}")
+print(f"Generated clean architecture diagram: {out_path}")

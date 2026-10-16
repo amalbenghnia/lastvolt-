@@ -114,7 +114,7 @@
 \textbf{Challenge Track} & IEEE PES (Power \& Energy) + IES (Industrial Electronics)\\
 \textbf{Submission Phase} & Phase 1 — Ideation \& Data Exploration\\
 \textbf{System Under Study} & University Campus Microgrid (20\,kV / 0.4\,kV, 7-bus)\\
-\textbf{Repository} & \url{https://github.com/anonymous-tsyp14/energymind}\\
+\textbf{Repository} & \url{https://github.com/demoanonymos-bot/LastVolt}\\
 \textbf{Version} & EnergyMind V2 · 5 Seeds · 21/21 Tests Passing\\
 \bottomrule
 \end{tabularx}
@@ -236,7 +236,7 @@ EnergyMind addresses all four TSYP14 Challenge Goals:
 1 & Evidence Fusion \& Fault Detection & Physics residuals + IsoForest + CUSUM hybrid fusion\\
 2 & Trust \& Uncertainty Quantification & Isotonic calibration (ECE=0.038), selective abstention, Active Evidence Acquisition\\
 3 & Governance \& Explainability & SHA-256 audit chain, SHAP per-alert attribution, expected-loss policy\\
-4 & Collective Defense & Noosphere: peer-to-peer ε-DP knowledge transfer across multiple energy nodes\\
+4 & Collective Defense & Noosphere: peer-to-peer $\varepsilon$-DP knowledge transfer across multiple energy nodes\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -293,7 +293,7 @@ Figure~\ref{fig:powerflow} validates the pandapower AC power flow model against 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.95\linewidth]{figures/fig02_powerflow_states.png}
-  \caption{Pandapower AC power flow analysis for the 7-bus campus network. \textbf{Left:} PCC busbar voltage as a function of PV output under three load regimes (30, 45, 60\,kW). Dashed lines show IEEE 1547 voltage limits (360–440\,V). \textbf{Right:} Net grid import vs.\ PV generation; the zero-crossing marks the self-sufficiency operating point where the campus fully covers its load from local resources.}
+  \caption{Pandapower AC power flow analysis for the 7-bus campus network. \textbf{Left:} PCC busbar voltage as a function of PV output under three load regimes (30, 45, 60\,kW). Dashed lines show IEEE 1547 voltage limits (360--440\,V). \textbf{Right:} Net grid import vs.\ PV generation; the zero-crossing marks the self-sufficiency operating point where the campus fully covers its load from local resources.}
   \label{fig:powerflow}
 \end{figure}
 
@@ -373,7 +373,7 @@ where $f_{\text{iso}}^{(k)}$ is a monotone step function minimizing squared erro
 \end{equation}
 
 \begin{tcolorbox}[resultbox]
-\textbf{Phase 1 Calibration Result:} ECE = \textbf{0.038} (CI95: 0.020–0.057) against a target of $\le$0.05. Raw classifier ECE $\approx$ 0.12. Isotonic regression was selected over Platt scaling because the 8-class imbalanced distribution violates the sigmoid monotonicity assumption on raw Naive Bayes scores.
+\textbf{Phase 1 Calibration Result:} ECE = \textbf{0.038} (CI95: 0.020--0.057) against a target of $\le$0.05. Raw classifier ECE $\approx$ 0.12. Isotonic regression was selected over Platt scaling because the 8-class imbalanced distribution violates the sigmoid monotonicity assumption on raw Naive Bayes scores.
 \end{tcolorbox}
 
 \subsection{Pillar 5 — Expected-Loss Policy \& Active Evidence Acquisition}
@@ -591,7 +591,7 @@ Scope definition & Section 2 of this report & \checkmark~Complete\\
 Objectives & Section 3 of this report & \checkmark~Complete\\
 Data / anomaly simulation plan & Section 4 of this report & \checkmark~Complete\\
 Preliminary design for each Goal & Section 5 of this report & \checkmark~Complete\\
-GitHub Repository & \url{https://github.com/anonymous-tsyp14/energymind} & \checkmark~Public\\
+GitHub Repository & \url{https://github.com/demoanonymos-bot/LastVolt} & \checkmark~Public\\
 Dataset & \texttt{data/raw/} + \texttt{data/reference/} & \checkmark~Done\\
 Code developed in Phase 1 & \texttt{src/energymind/} + \texttt{scripts/} & \checkmark~Done\\
 Unit tests & \texttt{tests/test\_core.py} & \checkmark~21/21 PASS\\
